@@ -12,7 +12,7 @@ export const genralLimiter = rateLimit({
 // The authentication (log in) rateLimit
 export const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
-	limit: 5, 
+	limit: 5, // limits the authorization to 5 requests
 	standardHeaders: 'draft-8', 
 	legacyHeaders: false, 
 	ipv6Subnet: 56, 

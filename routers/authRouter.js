@@ -1,7 +1,7 @@
 import {Router} from "express";
 const router = Router();
 
-// Authenticates if the user already has a user
+// Authenticates which routes the user has access to 
 function authenticateUser(req, res, next){
     // this simulates checking in the database 
     const isUser = true; 
@@ -17,16 +17,26 @@ function authenticateUser(req, res, next){
     }
 }
 
+// authorization
 router.post("/auth/login", authenticateUser, (req, res) => {
     const { username, password } = req.body;
-    
+
+    // if user exists in the database
+    // const isSame = await verifyPassword(password, user.hashedPassword)
+    // if (isSame) --> 
     console.log("User is logged in");
     res.send({ message: `Welcome back, ${req.username}` });
 })
 
 router.post("/auth/createUser", authenticateUser, (req, res) => {
+    const { username, password } = req.body;
+
+    // if user does NOT exisists in database 
+    // const hashedpassword = await hashPassword(password); 
+    // add user to database with hashed password 
+
     console.log("User is created")
-    res.send({ message: `User ${req.username} created successfully` });
+    res.send({ message: `User ${username} created successfully` });
 });
 
 export default router; 

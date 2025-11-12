@@ -1,16 +1,15 @@
 import bcrypt from 'bcryptjs';
 
-const password = "hunter123";
-const saltRounds = 14;
+// calls this when a new user signs up 
+async function hashPassword(password, saltRounds) {
 
+    const hashedPassword = await bcrypt.hash(password, saltRounds); 
+    return hashedPassword; 
+}
 
-// /register /forgotpassword
-const hashedPassword = await bcrypt.hash(password, saltRounds);
-//console.log(hashedPassword);
+// calls when a user logs in 
+async function verifyPassword(password, hashedPassword){
 
-const savedHashedPassword = "$2b$14$bSStc.sLtuwE4uWckCat0ugDhpiQjFSFTNL3oqSKUjPDsVeTBhGNS";
-const comparePassword = "hUnter123";
-
-// /login
-const isSame = await bcrypt.compare(comparePassword, savedHashedPassword);
-console.log(isSame);
+    const isSame = await bcrypt.compare(password, hashedPassword);
+    return isSame;
+}
