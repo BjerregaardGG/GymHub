@@ -1,18 +1,43 @@
 <script>
 
+    import { getFetch, postFetch } from "../util/fetchUtil";
+
     let email = "";
     let password = "";
     let mode = "login";
-    let loggedIn = true;
+    export let loggedIn = false;
+    let errorMessage = "";
 
-    function handleLogin() {
-        console.log(email, password)
-        // if success -> loggedIn = true 
-    
+    async function handleLogin() {
+        const user = { 
+            email: email,
+            password: password
+        }
+
+        const result = await postFetch("/auth/login", user);
+        console.log(result);
+
+        if (result.success) {
+            loggedIn = true; 
+        } else {
+            errorMessage = result.message;
+        }
     }
 
-    function handleNewUser() {
-        console.log(email, password)
+    async function handleNewUser() {
+        const newUser = {
+            email: email, 
+            password: password
+        }
+
+        const result = await postFetch("/auth/createuser", newUser);
+        console.log(result);
+
+        if (result.success) {
+            loggedIn = true; 
+        } else {
+            errorMessage = result.message; 
+        }
 
     }
 
@@ -25,13 +50,16 @@
 
 <h1>Welcome to...</h1>
 
-{#if !loggedIn}
 {#if mode==="login"}
 <div class="login-form">
     <h3>Enter your login</h3>
     <input type="email" bind:value={email} placeholder="Please enter your email">
     <input type="password" bind:value={password} placeholder="Please enter your password">
     <button class="login-button" on:click={handleLogin}>Login</button>
+
+    {#if errorMessage}
+    <p style="color:red">{errorMessage}</p>
+    {/if}
 
     <div class=bottom-buttons>
         <button class="new-user-button" on:click={() => mode = "newUser"}>Create an account</button> 
@@ -46,6 +74,10 @@
     <input type="password" bind:value={password} placeholder="Please enter your password">
     <button class="new-user-button" on:click={handleNewUser}>Create User</button>
 
+    {#if errorMessage}
+    <p style="color:red">{errorMessage}</p>
+    {/if}
+
     <div class=bottom-buttons>
         <button class="login-button" on:click={() => mode="login"}>Already a user?</button>
         <button class="forgot-p-button" on:click={() => mode="forgotLogin"}>Forgot your password?</button>
@@ -58,14 +90,15 @@
     <input type="email" bind:value={email} placeholder="Please enter your email">
     <button class="forgot-p-button" on:click={handleForgotuser}>Reset password</button>
 
+    {#if errorMessage}
+    <p style="color:red">{errorMessage}</p>
+    {/if}
+
     <div class=bottom-buttons>
     <button class="login-button" on:click={() => mode="login"}>Already a user?</button>
     <button class= "new-user-button" on:click={() => mode="newUser"}>Create an account</button>
     </div>
 </div>
-{/if}
-{:else}
-<!--Nyt indhold her efter login -->
 {/if}
 
 <slot></slot>

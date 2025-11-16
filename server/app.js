@@ -1,11 +1,20 @@
+import 'dotenv/config'; 
 import express from 'express';
 const app = express();
+
+app.use(express.json()); 
 
 //import helmet from 'helmet';
 //app.use(helmet());
 
-import session from "./util/session.js";
-app.use(session);
+import cors from 'cors';
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
+
+import sessionMiddleware from "./util/session.js";
+app.use(sessionMiddleware);
 
 import {genralLimiter, authLimiter} from "./util/rateLimit.js";
 app.use(genralLimiter);
@@ -17,8 +26,7 @@ app.use(authRouter);
 import sessionRouter from "./routers/sessionRouter.js";
 app.use(sessionRouter);
 
-
-const PORT = 8080 || process.env.PORT;
-app.use(PORT, () => {
+const PORT = 8080 || Number(process.env.PORT);
+app.listen(PORT, () => {
     console.log('Server running on port', PORT)
 })
