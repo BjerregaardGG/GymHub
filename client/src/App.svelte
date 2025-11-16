@@ -2,6 +2,7 @@
   import { Router, Link, Route, navigate } from "svelte-routing";
   import Login from "./pages/Login.svelte";
   import Home from "./pages/Home.svelte";
+  import ResetPassword from "./pages/ResetPassword.svelte";
 
   let loggedIn = false; 
 
@@ -31,5 +32,14 @@
      <Login bind:loggedIn></Login>
      {/if}
      </Route>
+
+    <!-- Reset Password -->
+     <Route path="/reset-password">
+     {#if loggedIn}
+     <Home> </Home>
+     {:else}
+     <ResetPassword></ResetPassword>
+     {/if}
+    </Route>
   </div>
 </Router>

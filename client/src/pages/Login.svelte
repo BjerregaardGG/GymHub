@@ -1,6 +1,6 @@
 <script>
 
-    import { getFetch, postFetch } from "../util/fetchUtil";
+    import { postFetch } from "../util/fetchUtil";
 
     let email = "";
     let password = "";
@@ -38,17 +38,24 @@
         } else {
             errorMessage = result.message; 
         }
-
     }
 
-    function handleForgotuser() {
+    async function handleForgotuser() {
+        const result = await postFetch("/auth/forgotpassword", {email}); 
+        console.log(result); 
 
+        if (result.success) {
+
+            alert("Check din email");
+
+        } else {
+            errorMessage = result.message; 
+        }
     }
-
-    
+ 
 </script>
 
-<h1>Welcome to...</h1>
+<h1>Welcome to the Login Page</h1>
 
 {#if mode==="login"}
 <div class="login-form">

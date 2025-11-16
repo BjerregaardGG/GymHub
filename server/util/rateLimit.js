@@ -13,6 +13,7 @@ export const genralLimiter = rateLimit({
 export const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
 	limit: 5, // limits the authorization to 5 requests
+	message: { success: false, message: "Too many login attempts. Try again in 15 minutes." },
 	standardHeaders: 'draft-8', 
 	legacyHeaders: false, 
 	ipv6Subnet: 56, 

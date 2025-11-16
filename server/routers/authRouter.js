@@ -8,8 +8,9 @@ const users = [
 
 import { hashPassword, verifyPassword } from "../util/encryption.js";
 
-// authorization
+// Authentication - login 
 router.post("/auth/login", async (req, res) => {
+    console.log("Body received:", req.body); 
     const { email, password } = req.body;
 
     const user = users.find(user => user.email == email);
@@ -28,7 +29,9 @@ router.post("/auth/login", async (req, res) => {
     res.send({data: "", success: true, message: "User is logged in"});
 });
 
+// Authentication - create user 
 router.post("/auth/createuser", async (req, res) => {
+    console.log("Body received:", req.body); 
     const { email, password } = req.body;
 
     const user = users.find(user => user.email == email); 
@@ -38,10 +41,40 @@ router.post("/auth/createuser", async (req, res) => {
     }
 
     const hashedPassword = await hashPassword(password, 14);
+    console.log(hashedPassword);
     const newUser = { email: email, password: hashedPassword };
     users.push(newUser);
 
     res.send({ data: "", success: true, message: "User is created"});
+});
+
+import { resetEmail, initMailer } from "../util/nodeMailer.js";
+await initMailer(); 
+const resetToken = {};
+
+// Authentication - forgot user 
+router.post("/auth/forgotpassword", async (req, res) => {
+    console.log("Email recieved", req.body); 
+    const email = req.body.email; 
+
+    const user = users.find(user => user.email == email);
+
+    if (!user) {
+        return res.send({ data: user.email, success: false, message: "User with this email does not exist" }); 
+    }
+
+    const token = Math.random().toString(36);
+    resetToken[token] = { email, expires: Date.now() + 3600000 }; // resets in an hour 
+
+    resetLink = `http://localhost:5173/reset-password?token=${token}`;
+
+    try {
+        resetEmail(email, resetLink); 
+        res.send({ success: true, message: "Reset password email has been sent" });
+    } catch (error) {
+        res.send({ success: false, message: "Could not send email" });
+        console.log(error);
+    }
 });
 
 // Authenticates which routes the user has access to 

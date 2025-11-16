@@ -1,6 +1,6 @@
 export async function getFetch(endpoint) {
     try {
-        const response = await fetch(import.meta.env.VITE.BASE_URL + endpoint, {
+        const response = await fetch(import.meta.env.VITE_BASE_URL + endpoint, {
             credentials: 'include'
         });
 
@@ -13,7 +13,7 @@ export async function getFetch(endpoint) {
 
 export async function postFetch(endpoint, body) {
     try {
-        const response = await fetch(import.meta.env.VITE.BASE_URL + endpoint, {
+        const response = await fetch(import.meta.env.VITE_BASE_URL + endpoint, {
             method: 'POST',
             credentials: 'include',
             headers: {
