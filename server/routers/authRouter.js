@@ -13,7 +13,7 @@ router.post("/auth/login", async (req, res) => {
     console.log("Body received:", req.body); 
     const { email, password } = req.body;
 
-    const user = users.find(user => user.email == email);
+    const user = users.find(user => user.email.toLowerCase() == email.toLowerCase());
 
     if (!user) {
         return res.send({ data: "", success: false, message: "Could not find user" });
@@ -34,7 +34,7 @@ router.post("/auth/createuser", async (req, res) => {
     console.log("Body received:", req.body); 
     const { email, password } = req.body;
 
-    const user = users.find(user => user.email == email); 
+    const user = users.find(user => user.email.toLowerCase() == email.toLowerCase());
 
     if (user) {
         return res.send({ data: user.email, success: false, message: "User with this email already exists" })
@@ -57,10 +57,10 @@ router.post("/auth/forgotpassword", async (req, res) => {
     console.log("Email recieved", req.body); 
     const email = req.body.email; 
 
-    const user = users.find(user => user.email == email);
+    const user = users.find(user => user.email.toLowerCase() == email.toLowerCase());
 
     if (!user) {
-        return res.send({ data: user.email, success: false, message: "User with this email does not exist" }); 
+        return res.send({success: false, message: "User with this email does not exist" }); 
     }
 
     const token = Math.random().toString(36);

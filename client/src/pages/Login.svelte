@@ -8,6 +8,7 @@
     export let loggedIn = false;
 
     async function handleLogin() {
+        
         const user = { 
             email: email,
             password: password
@@ -24,8 +25,14 @@
     }
 
     async function handleNewUser() {
-        const newUser = {
-            email: email, 
+
+        if (email.length < 5 && password.length < 5 ) {
+            toastr.warning("You need to provide at least 5 characters");
+            return;
+        }
+        
+        const newUser = { 
+            email: email,
             password: password
         }
 
