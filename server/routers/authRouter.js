@@ -64,9 +64,10 @@ router.post("/auth/forgotpassword", async (req, res) => {
     }
 
     const token = Math.random().toString(36);
+    console.log(token);
     resetToken[token] = { email, expires: Date.now() + 3600000 }; // resets in an hour 
 
-    resetLink = `http://localhost:5173/reset-password?token=${token}`;
+    let resetLink = `http://localhost:5173/reset-password?token=${token}`;
 
     try {
         resetEmail(email, resetLink); 
@@ -76,6 +77,33 @@ router.post("/auth/forgotpassword", async (req, res) => {
         console.log(error);
     }
 });
+
+router.post("/auth/resetpassword", async (req, res) => {
+    const { token, newPassword } = req.body;
+
+    // Checks if the token exists
+    const tokenData = resetToken[token];
+    if (!tokenData || tokenData.expires < Date.now()) {
+        if (tokenData) {
+            delete resetToken[token];
+        }
+        return res.send({ success: false, message: "Did not find the token" });
+    }
+    // Find the user based on email from the token
+    const userEmail = tokenData.email;
+    const user = users.find(user => user.email == userEmail);
+
+    if (!user) {
+        return res.send({ success: false, message: "The user does not exist" });
+    }
+
+    user.password = await hashPassword(newPassword, 14); 
+    delete resetToken[token];
+
+    res.send({ success: true, message: "The password has been reset" });
+});
+
+
 
 // Authenticates which routes the user has access to 
 function authenticateUser(req, res, next){

@@ -24,10 +24,10 @@ export async function resetEmail(toEmail, resetLink) {
     }
 
     const info = await transporter.sendMail({
-        from: '"Din App" <no-reply@dinapp.com>',
+        from: '"Authorization" <no-reply@dinapp.com>',
         to: toEmail,
-        subject: "Nulstil dit password",
-        html: `<p>Klik på linket nedenfor for at nulstille dit password:</p>
+        subject: "Reset your password",
+        html: `<p>Click on the link below to reset your password:</p>
                <a href="${resetLink}">${resetLink}</a>`,
     });
 

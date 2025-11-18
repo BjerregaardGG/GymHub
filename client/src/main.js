@@ -1,4 +1,5 @@
 import { mount } from 'svelte'
+import 'toastr/build/toastr.min.css';
 import './app.css'
 // @ts-ignore
 import App from './App.svelte'
