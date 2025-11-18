@@ -5,7 +5,6 @@
     let email = "";
     let password = "";
     let mode = "login";
-    let errorMessage = "";
     export let loggedIn = false;
 
     async function handleLogin() {
@@ -34,7 +33,10 @@
         console.log(result);
 
         if (result.success) {
-            loggedIn = true; 
+            toastr.success("You successfully created a new user. Please sign in.")
+            mode = "login";
+            email = "";
+            password = "";
         } else {
             toastr.error(result.message); 
         }

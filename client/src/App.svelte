@@ -1,10 +1,25 @@
 <script>
-  import { Router, Link, Route } from "svelte-routing";
+  import { Router, Link, Route, navigate } from "svelte-routing";
   import Login from "./pages/Login.svelte";
   import Home from "./pages/Home.svelte";
   import ResetPassword from "./pages/ResetPassword.svelte";
+  import { postFetch } from "./util/fetchUtil";
+  import toastr from "toastr";
 
   let loggedIn = false; 
+
+  async function handleSignOut(e) {
+    e.preventDefault();
+    const result = await postFetch("/auth/signout"); 
+
+    if (result.success) {
+      loggedIn = false; 
+      toastr.info(result.message);
+      navigate("/", {replace: true});
+    } else {
+      toastr.error(result.message)
+    } 
+  };
 
 </script>
 
@@ -12,6 +27,7 @@
   <nav>
     <Link to="/">Home</Link>
     <Link to="/users">Users</Link>
+    <a href="/" on:click={handleSignOut}>Sign out</a>
   </nav>
 
   <div>
@@ -41,5 +57,6 @@
      <ResetPassword></ResetPassword>
      {/if}
     </Route>
+
   </div>
 </Router>

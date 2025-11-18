@@ -103,22 +103,15 @@ router.post("/auth/resetpassword", async (req, res) => {
     res.send({ success: true, message: "The password has been reset" });
 });
 
+// destroys the session if user logs out
+router.post("/auth/signout", (req, res) => {
+    req.session.destroy(error => {
+        if (error) {
+        return res.send({ success: false, message: "Could not sign out" })
+        }
 
-
-// Authenticates which routes the user has access to 
-function authenticateUser(req, res, next){
-    // this simulates checking in the database 
-    const isUser = true; 
-
-    // REMEMBER TO CREATE A SESSION SOMEWHERE AROUND HERE
-    if (isUser) {
-        req.isAdmin = isAdmin; 
-        // simulates getting username from the database
-        req.username = "Johnnie"
-        return next(); // for at undgå header fejl
-    } else {
-        res.status(403).send({ data: "You need to be admin"})
-    }
-};
+        res.send({ success: true, message: "You are signed out"});
+    });
+}); 
 
 export default router; 

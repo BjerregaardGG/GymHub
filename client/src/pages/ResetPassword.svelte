@@ -37,7 +37,7 @@
         console.log(result);
 
         if (result.success) {
-            toastr.succes(result.message);
+            toastr.success(result.message);
             newPassword = "";
             confirmPassword = "";
 
@@ -54,14 +54,55 @@
 </script>
 
 <h1>Reset your password</h1>
-<div class="reset-form">
-    {#if token}
+<div class="reset-form"> {#if token}
+        <h3>Set new password</h3>
         <p>Please enter your new password:</p>
 
         <input type="password" bind:value={newPassword} placeholder="New password">
         <input type="password" bind:value={confirmPassword} placeholder="Confirm password">
-        <button on:click={handleResetPassword}>Reset password</button>
+        
+        <button class="forgot-p-button" on:click={handleResetPassword}>Reset password</button>
     {:else}
-        <p>Vent venligst. Hvis du ikke har modtaget en besked, er linket muligvis ugyldigt.</p>
+        <p>Linket er ugyldigt eller udløbet. Prøv venligst at anmode om en ny adgangskode nulstilling fra login siden.</p>
     {/if}
 </div>
+
+<style>
+
+    
+    .reset-form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 250px;
+        margin: 2rem auto;
+    }
+
+    input {
+        padding: 0.5rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
+
+    button {
+        padding: 0.5rem;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+    }
+
+    .forgot-p-button {
+        background-color: #dc3545;
+        margin-top: 1rem; 
+    }
+    .forgot-p-button:hover {
+        background-color: #a71d2a;
+    }
+    
+    .reset-form p {
+        margin-bottom: 0.5rem;
+    }
+</style>
