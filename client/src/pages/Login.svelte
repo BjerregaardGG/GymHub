@@ -62,7 +62,7 @@
  
 </script>
 
-<h1>Welcome to the Login Page</h1>
+<h1>GYM HUB</h1>
 
 {#if mode==="login"}
 <div class="login-form">

@@ -1,12 +1,8 @@
 import {Router} from "express";
-const router = Router();
-
-const users = [
-    { id: 1, email: "Ole@hej.dk", password: "1233" },
-    { id: 2, email: "Nanna@huhu.dk", password: "1212" }
-];
-
+import { users } from "./userRouter.js";
 import { hashPassword, verifyPassword } from "../util/encryption.js";
+
+const router = Router();
 
 // Authentication - login 
 router.post("/auth/login", async (req, res) => {
@@ -29,6 +25,8 @@ router.post("/auth/login", async (req, res) => {
     res.send({data: "", success: true, message: "User is logged in"});
 });
 
+let nextId = 6;
+
 // Authentication - create user 
 router.post("/auth/createuser", async (req, res) => {
     console.log("Body received:", req.body); 
@@ -42,7 +40,7 @@ router.post("/auth/createuser", async (req, res) => {
 
     const hashedPassword = await hashPassword(password, 14);
     console.log(hashedPassword);
-    const newUser = { email: email, password: hashedPassword };
+    const newUser = { id: nextId++, email: email, password: hashedPassword };
     users.push(newUser);
 
     res.send({ data: "", success: true, message: "User is created"});

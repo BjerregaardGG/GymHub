@@ -23,8 +23,8 @@ app.use("/auth", authLimiter);
 import authRouter from "./routers/authRouter.js";
 app.use(authRouter);
 
-import sessionRouter from "./routers/sessionRouter.js";
-app.use(sessionRouter);
+import userRouter from "./routers/userRouter.js";
+app.use(userRouter);
 
 const PORT = 8080 || Number(process.env.PORT);
 app.listen(PORT, () => {
