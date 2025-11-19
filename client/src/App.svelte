@@ -30,7 +30,7 @@
     <div class="nav-container">
         <div class="nav-left">
             <Link to="/">Home</Link>
-            <Link to="/users">Clients</Link>
+            <Link to="/clients">Clients</Link>
         </div>
         
         <div class="nav-title">
@@ -55,7 +55,7 @@
     </Route>
 
     <!-- Users -->
-     <Route path="/users">
+     <Route path="/clients">
      {#if loggedIn}
       <Clients></Clients>
      {:else}

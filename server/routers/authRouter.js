@@ -68,7 +68,7 @@ router.post("/auth/forgotpassword", async (req, res) => {
     let resetLink = `http://localhost:5173/reset-password?token=${token}`;
 
     try {
-        resetEmail(email, resetLink); 
+        await resetEmail(email, resetLink); 
         res.send({ success: true, message: "Reset password email has been sent" });
     } catch (error) {
         res.send({ success: false, message: "Could not send email" });
