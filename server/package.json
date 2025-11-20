@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "deleteDatabase": "node ./database/createDatabase.js delete",
+    "updateDatabase": "node ./database/createDatabase.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,8 @@
     "express-rate-limit": "^8.2.1",
     "express-session": "^1.18.2",
     "nodemailer": "^7.0.10",
-    "nodemon": "^3.1.11"
+    "nodemon": "^3.1.11",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
   }
 }

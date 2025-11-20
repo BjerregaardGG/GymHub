@@ -1,6 +1,6 @@
 import {Router} from "express";
-import { users } from "./userRouter.js";
 import { hashPassword, verifyPassword } from "../util/encryption.js";
+import db from "../database/connection.js"
 
 const router = Router();
 
@@ -9,41 +9,44 @@ router.post("/auth/login", async (req, res) => {
     console.log("Body received:", req.body); 
     const { email, password } = req.body;
 
-    const user = users.find(user => user.email.toLowerCase() == email.toLowerCase());
+    const users = await db.all('SELECT * FROM users WHERE email = ?;', email); // returns an array
 
-    if (!user) {
+    if (users.length === 0) {
         return res.send({ data: "", success: false, message: "Could not find user" });
     }
 
+    const user = users[0];
     const validatePassword = await verifyPassword(password, user.password);
+
     if (!validatePassword) {
         return res.send({ data: "", success: false, message: "Wrong password" });
     }
 
     req.session.user = {email: user.email};
-
     res.send({data: "", success: true, message: "User is logged in"});
 });
-
-let nextId = 6;
 
 // Authentication - create user 
 router.post("/auth/createuser", async (req, res) => {
     console.log("Body received:", req.body); 
     const { email, password } = req.body;
 
-    const user = users.find(user => user.email.toLowerCase() == email.toLowerCase());
+    const users = await db.all('SELECT * FROM users WHERE email = ?;', email)
 
-    if (user) {
-        return res.send({ data: user.email, success: false, message: "User with this email already exists" })
+    if (users.length > 0) {
+        return res.send({ success: false, message: "User with this email already exists" })
     }
 
     const hashedPassword = await hashPassword(password, 14);
-    console.log(hashedPassword);
-    const newUser = { id: nextId++, email: email, password: hashedPassword };
-    users.push(newUser);
+    const defaultRole = "USER"; 
 
-    res.send({ data: "", success: true, message: "User is created"});
+    try{
+        await db.run('INSERT INTO users (email, password, role) VALUES (?, ?, ?);', email, hashedPassword, defaultRole);
+        res.send({ data: "", success: true, message: "User is created"});
+    } catch (error) {
+        console.log(error);
+        res.send({ data: "", succes: false, message: "Failed to create user"});
+    }
 });
 
 import { resetEmail, initMailer } from "../util/nodeMailer.js";
@@ -55,14 +58,13 @@ router.post("/auth/forgotpassword", async (req, res) => {
     console.log("Email recieved", req.body); 
     const email = req.body.email; 
 
-    const user = users.find(user => user.email.toLowerCase() == email.toLowerCase());
+    const users = await db.all('SELECT * FROM users WHERE email = ?;', email);
 
-    if (!user) {
-        return res.send({success: false, message: "User with this email does not exist" }); 
+    if (users.length === 0) {
+        return res.send({ success: false, message: "User with this email does not exist" }); 
     }
 
     const token = Math.random().toString(36);
-    console.log(token);
     resetToken[token] = { email, expires: Date.now() + 3600000 }; // resets in an hour 
 
     let resetLink = `http://localhost:5173/reset-password?token=${token}`;
@@ -81,24 +83,36 @@ router.post("/auth/resetpassword", async (req, res) => {
 
     // Checks if the token exists
     const tokenData = resetToken[token];
+
     if (!tokenData || tokenData.expires < Date.now()) {
         if (tokenData) {
             delete resetToken[token];
         }
         return res.send({ success: false, message: "Did not find the token" });
     }
+
+    // Hash the new password
+    const hashedPassword = await hashPassword(newPassword, 14);
+
     // Find the user based on email from the token
     const userEmail = tokenData.email;
-    const user = users.find(user => user.email == userEmail);
+    const users = db.all('SELECT * FROM users WHERE email = ?;', userEmail)
 
-    if (!user) {
+    // If the user does not exist
+    if (users.length === 0) {
+        delete resetToken[token];
         return res.send({ success: false, message: "The user does not exist" });
     }
 
-    user.password = await hashPassword(newPassword, 14); 
-    delete resetToken[token];
+    try {
+        await db.run('UPDATE users SET password = ? WHERE email = ?;', hashedPassword, userEmail);
+        delete resetToken[token];
 
-    res.send({ success: true, message: "The password has been reset" });
+        res.send({ success: true, message: "The password has been reset successfully" });
+    } catch (error) {
+        console.error("Database update error:", error);
+        res.status(500).send({ success: false, message: "Failed to update password in database" });
+    }
 });
 
 // destroys the session if user logs out
