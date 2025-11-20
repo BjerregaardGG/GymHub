@@ -6,7 +6,7 @@
     let trainingData = {}
 
     onMount(async() => {
-        const result = await getFetch("/usertrainingdata");
+        const result = await getFetch("/api/usertrainingdata");
 
         if (result && result.success) {
             trainingData = result.data; 

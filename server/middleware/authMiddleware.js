@@ -8,7 +8,7 @@ export function isAuthorized(req, res, next){
 }
 
 export function isAdmin(req, res, next) {
-    const isAdmin = req.session.user && req.session.user.role == "admin";
+    const isAdmin = req.session.user && req.session.user.role == "ADMIN";
 
     if (!isAdmin) {
         return res.status(403).send({ message: "You do not have access to admin content." });

@@ -7,7 +7,7 @@
     let users; 
 
     onMount(async() => {
-        const result = await getFetch("/users");
+        const result = await getFetch("/api/users");
 
         if (result && result.success) {
             users = result.data; 

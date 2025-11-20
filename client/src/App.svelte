@@ -75,6 +75,12 @@
   </div>
 </Router>
 
+<footer class="footer">
+  <div class="footer-content">
+      &copy; {new Date().getFullYear()} GYM HUB | © 
+  </div>
+</footer>
+
 <style>
   .nav-bar {
       position: fixed; 
@@ -122,7 +128,6 @@
       justify-content: flex-end; 
   }
 
-  .nav-left a,
   .nav-right a { 
       color: #000000;
       text-decoration: none;
@@ -131,13 +136,35 @@
       transition: color 0.2s;
   }
 
-  .nav-left a:hover,
   .nav-right a:hover {
       color: #565656;
       border-bottom: 2px solid #5aa7ff; 
   }
 
+
+  .footer {
+      width: 100%;
+      position: fixed; 
+      bottom: 0;
+      left: 0;
+
+      background-color: #333333; 
+      color: #cccccc; 
+      padding: 10px 0;
+      text-align: center;
+      font-size: 0.85em;
+      z-index: 999;
+      box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .footer-content {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 20px;
+  }
+
   :global(body) {
       padding-top: 60px; 
+      padding-bottom: 40px;
   }
 </style>

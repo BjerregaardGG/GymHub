@@ -24,7 +24,7 @@ import authRouter from "./routers/authRouter.js";
 app.use(authRouter);
 
 import userRouter from "./routers/userRouter.js";
-app.use(userRouter);
+app.use("/api", userRouter);
 
 const PORT = 8080 || Number(process.env.PORT);
 app.listen(PORT, () => {

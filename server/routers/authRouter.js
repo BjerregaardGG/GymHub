@@ -1,6 +1,6 @@
 import {Router} from "express";
 import { hashPassword, verifyPassword } from "../util/encryption.js";
-import db from "../database/connection.js"
+import db from "../database/connection.js";
 
 const router = Router();
 
@@ -22,7 +22,11 @@ router.post("/auth/login", async (req, res) => {
         return res.send({ data: "", success: false, message: "Wrong password" });
     }
 
-    req.session.user = {email: user.email};
+    req.session.user = {
+        email: user.email,
+        role: user.role
+    };
+
     res.send({data: "", success: true, message: "User is logged in"});
 });
 
