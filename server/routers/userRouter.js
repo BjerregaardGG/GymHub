@@ -10,10 +10,25 @@ router.get("/users", isAuthorized, isAdmin, async (req, res) => {
     res.send({ data: userData, success: true});
 });
 
-router.get("/usertrainingdata", isAuthorized, async (req, res) => {    
-    const userEmail = req.session.user.email; 
+router.get("/users/profile", isAuthorized, async (req, res) => {
+    const userId = req.session.user.id; 
 
-    if (!userEmail) {
+    if (!userId) {
+        return res.status(401).send({ success: false, message: "Not authorized. You need to login"})
+    }
+
+    const users = await db.all(`SELECT name, image_path FROM users WHERE id = ?;`, userId);
+
+    const userData = users[0];
+
+    res.send({ data: userData, success: true});
+    
+});
+
+router.get("/users/prdata", isAuthorized, async (req, res) => {    
+    const userId = req.session.user.id; 
+
+    if (!userId) {
         return res.status(401).send({ success: false, message: "Not authorized. You need to login"})
     }
 
@@ -25,13 +40,13 @@ router.get("/usertrainingdata", isAuthorized, async (req, res) => {
         LEFT JOIN
             pr_data p ON u.id = p.user_id
         WHERE
-            u.email = ?;
+            u.id = ?;
     `;
 
     let userTrainingData; 
 
     try {
-        userTrainingData = await db.all(trainingDataQuery, userEmail);
+        userTrainingData = await db.all(trainingDataQuery, userId );
     } catch (error) {
         console.log(error);
         return res.status(500).send({ success: false, message: "Could not fetch training data" });

@@ -3,6 +3,7 @@ import express from 'express';
 const app = express();
 
 app.use(express.json()); 
+app.use(express.static("public"));
 
 //import helmet from 'helmet';
 //app.use(helmet());

@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(50), 
     email VARCHAR(100) UNIQUE,
     password VARCHAR(75),
+    image_path VARCHAR,
     role TEXT CHECK( role IN ("ADMIN", "TRAINER", "USER") )
 );
 
@@ -30,15 +31,16 @@ CREATE TABLE IF NOT EXISTS pr_data (
 );
 `);
 
+
 if (deleteMode) {
     db.run(`INSERT INTO users (id, name, email, password, role) VALUES (1, 'Ole', 'ole@hotmail.dk',
          '$2b$14$qnv9DIMDRErunkw72ZyfuODc./adnNdzyzdNlSCqVv31GfdMZdJZu', 'ADMIN')`); // 1234x
-    db.run(`INSERT INTO users (id, name, email, password, role) VALUES (2, 'Nanna', 'nanna@hotmail.dk',
-         '$2b$14$vkrt4LlZ0P/JihmaDkAuFukK9C8ODszphqlUjD2y1dic/x3jAmbty', 'USER')`); // 4444kl
-    db.run(`INSERT INTO users (id, name, email, password, role) VALUES (3, 'Thomas', 'thomas@gmail.com',
-         '$2b$14$AMBDYttPuznUnZ4biOqV8eUQCxhkXw8F.8QB5n91Ho6PUfGFeWroK', 'USER')`); // 8765ff
-    db.run(`INSERT INTO users (id, name, email, password, role) VALUES (4, 'Phillip', 'phillip@gmail.com',
-         '$2b$14$8KOIN.ZsiKUVDxnRolNCYeh7nmAHp3NzQnRNadhCZhq.fltxBgpAy', 'USER')`); // password
+    db.run(`INSERT INTO users (id, name, email, password, image_path, role) VALUES (2, 'Nanna', 'nanna@hotmail.dk',
+         '$2b$14$vkrt4LlZ0P/JihmaDkAuFukK9C8ODszphqlUjD2y1dic/x3jAmbty', 'nanna_image.jpg', 'USER')`); // 4444kl
+    db.run(`INSERT INTO users (id, name, email, password, image_path, role) VALUES (3, 'Thomas', 'thomas@gmail.com',
+         '$2b$14$AMBDYttPuznUnZ4biOqV8eUQCxhkXw8F.8QB5n91Ho6PUfGFeWroK', 'thomas_image.jpg', 'USER')`); // 8765ff
+    db.run(`INSERT INTO users (id, name, email, password, image_path, role) VALUES (4, 'Phillip', 'phillip@gmail.com',
+         '$2b$14$8KOIN.ZsiKUVDxnRolNCYeh7nmAHp3NzQnRNadhCZhq.fltxBgpAy', 'phillip_image.jpg', 'USER')`); // password
     db.run(`INSERT INTO users (id, name, email, password, role) VALUES (5, 'Olivia', 'olivia@gmail.com',
          '$2b$14$IU5LDgyyivGhKO0sX5Z2/.BR9.CdoJmyVgIHKotl3jvIiD7eiM1Nq', 'ADMIN')`); // youwillneverguess
 

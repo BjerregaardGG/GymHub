@@ -23,6 +23,7 @@ router.post("/auth/login", async (req, res) => {
     }
 
     req.session.user = {
+        id: user.id,
         email: user.email,
         role: user.role
     };
