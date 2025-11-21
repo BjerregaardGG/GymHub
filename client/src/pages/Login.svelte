@@ -130,7 +130,6 @@
         transition: background-color 0.2s;
     }
 
-    /* Primær login-knap (blå) */
     .login-button {
         background-color: #007bff;
     }
@@ -138,7 +137,6 @@
         background-color: #0056b3;
     }
 
-    /* Create user-knap (grøn) */
     .new-user-button {
         background-color: #28a745;
     }
@@ -146,7 +144,6 @@
         background-color: #1e7e34;
     }
 
-    /* Forgot password-knap (rød) */
     .forgot-p-button {
         background-color: #dc3545;
     }
@@ -156,8 +153,8 @@
 
     .bottom-buttons {
     display: flex;
-    justify-content: space-between; /* knapperne fordeles med plads imellem */
-    gap: 0.5rem; /* valgfri afstand mellem knapperne */
+    justify-content: space-between; 
+    gap: 0.5rem; 
     margin-top: 0.5rem;
     }
 </style>

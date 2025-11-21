@@ -68,8 +68,6 @@
 </div>
 
 <style>
-
-    
     .reset-form {
         display: flex;
         flex-direction: column;
