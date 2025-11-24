@@ -5,9 +5,6 @@ const app = express();
 app.use(express.json()); 
 app.use(express.static("public"));
 
-//import helmet from 'helmet';
-//app.use(helmet());
-
 import cors from 'cors';
 app.use(cors({
     origin: "http://localhost:5173",
@@ -30,4 +27,4 @@ app.use("/api", userRouter);
 const PORT = 8080 || Number(process.env.PORT);
 app.listen(PORT, () => {
     console.log('Server running on port', PORT)
-})
+});

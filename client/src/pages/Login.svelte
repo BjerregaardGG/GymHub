@@ -8,7 +8,6 @@
     export let loggedIn = false;
 
     async function handleLogin() {
-        
         const user = { 
             email: email,
             password: password

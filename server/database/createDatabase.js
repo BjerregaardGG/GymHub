@@ -1,6 +1,6 @@
 import db from "./connection.js";
 
-const deleteMode = process.argv.includes('delete') // node ./database/createDatabase.js delete i terminalen 
+const deleteMode = process.argv.includes('delete') // node ./database/createDatabase.js delete in terminal
 
 if (deleteMode) {
     db.exec(`DROP TABLE IF EXISTS users`);

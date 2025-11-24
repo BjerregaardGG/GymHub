@@ -7,6 +7,7 @@
     let token = "";
     let newPassword = "";
     let confirmPassword = "";
+
     // Get the token from the URL
     onMount(() => {
         const url = new URLSearchParams(window.location.search);
@@ -63,7 +64,7 @@
         
         <button class="forgot-p-button" on:click={handleResetPassword}>Reset password</button>
     {:else}
-        <p>Linket er ugyldigt eller udløbet. Prøv venligst at anmode om en ny adgangskode nulstilling fra login siden.</p>
+        <p>Could not find link.</p>
     {/if}
 </div>
 
