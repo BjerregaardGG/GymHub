@@ -22,7 +22,6 @@ router.get("/users/profile", isAuthorized, async (req, res) => {
     const userData = users[0];
 
     res.send({ data: userData, success: true});
-    
 });
 
 router.get("/users/prdata", isAuthorized, async (req, res) => {    

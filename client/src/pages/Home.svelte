@@ -1,10 +1,12 @@
 <script>
     import { onMount } from 'svelte';
     import { getFetch } from "../util/fetchUtil.js";
+    import PRForm from '../components/PRForm.svelte';
     import toastr from 'toastr';
 
     let userTrainingData = {};
     let profileData = {};
+    let showForm = false;
 
     // fetching pr data
     onMount(async() => {
@@ -30,18 +32,19 @@
         }
     }); 
 
+    function toggleForm(){
+        showForm = !showForm;
+    }
+
 </script>
 
 <h1>Training Feed</h1>
 
 {#if profileData.image_path}
-    <img 
-        src={profileData.image_path} 
-        alt={`Profilbillede for ${profileData.name}`} 
-        id="profile-pic"
-    />
+    <img src={profileData.image_path} alt={`Profilbillede for ${profileData.name}`} id="profile-pic"/>
 {/if}
 
+{#if !showForm}
 <!-- We need to use Object.keys to turn our object into an array of its keys (bench_press, squat etc..)-->
 {#if Object.keys(userTrainingData).length > 0}
     <ul class="pr-list">
@@ -51,6 +54,12 @@
     </ul>
 {:else}
     <p>No training data yet.</p>
+{/if}
+<button onclick={toggleForm}>Update PR data</button>
+
+{:else}
+<PRForm {userTrainingData}/>
+<button onclick={toggleForm}>Cancel</button>
 {/if}
 
 <style>
