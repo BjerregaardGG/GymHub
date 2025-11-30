@@ -2,7 +2,8 @@
     import { postFetch } from "../util/fetchUtil.js";
     import toastr from "toastr";
 
-    const { userTrainingData } = $props();
+    export let onClose; // callback from Parent (Home)
+    export let userTrainingData;
     
     async function updateTrainingData(event){
         event.preventDefault();
@@ -12,6 +13,7 @@
             toastr.error("Could not update training data");
         } else {
             toastr.success(result.message)
+            onClose();
         }
     };
 </script>

@@ -1,12 +1,15 @@
 <script>
     import { onMount } from 'svelte';
     import { getFetch } from "../util/fetchUtil.js";
-    import PRForm from '../components/PRForm.svelte';
-    import toastr from 'toastr';
 
+    import PRForm from '../components/PRForm.svelte';
+    import WorkoutForm from '../components/WorkoutForm.svelte';
+
+    import toastr from 'toastr';
+    
     let userTrainingData = {};
     let profileData = {};
-    let showForm = false;
+    let formType = null;
 
     // fetching pr data
     onMount(async() => {
@@ -32,10 +35,6 @@
         }
     }); 
 
-    function toggleForm(){
-        showForm = !showForm;
-    }
-
 </script>
 
 <h1>Training Feed</h1>
@@ -44,22 +43,28 @@
     <img src={profileData.image_path} alt={`Profilbillede for ${profileData.name}`} id="profile-pic"/>
 {/if}
 
-{#if !showForm}
+{#if formType === null}
 <!-- We need to use Object.keys to turn our object into an array of its keys (bench_press, squat etc..)-->
-{#if Object.keys(userTrainingData).length > 0}
-    <ul class="pr-list">
-    {#each Object.entries(userTrainingData) as [metric, value]} <li class="pr-item"><!-- Object.entries turns our objet into an array of arrays [metric, value] -> [bench_press, 110]-->
-        <strong>{metric.replace(/_/g, ' ').toUpperCase()}:</strong> {value} </li> <!-- Removes under_case-->
-    {/each}
-    </ul>
-{:else}
-    <p>No training data yet.</p>
-{/if}
-<button onclick={toggleForm}>Update PR data</button>
+    {#if Object.keys(userTrainingData).length > 0}
+        <ul class="pr-list">
+        {#each Object.entries(userTrainingData) as [metric, value]} <li class="pr-item"><!-- Object.entries turns our objet into an array of arrays [metric, value] -> [bench_press, 110]-->
+            <strong>{metric.replace(/_/g, ' ').toUpperCase()}:</strong> {value} </li> <!-- Removes under_case-->
+        {/each}
+        </ul>
+    {:else}
+        <p>No training data yet.</p>
+    {/if}
+    
+    <button onclick={() => formType = "pr"}>Update PR data</button>
+    <button onclick={() => formType = "workout"}>Create workout</button>
 
-{:else}
-<PRForm {userTrainingData}/>
-<button onclick={toggleForm}>Cancel</button>
+{:else if formType === "pr"}
+    <PRForm {userTrainingData} onClose={() => formType = null}/>
+    <button onclick={() => formType = null}>Cancel</button>
+
+{:else if formType === "workout"}
+    <WorkoutForm onClose={() => formType = null}/>
+    <button onclick={() => formType = null}>Cancel</button>
 {/if}
 
 <style>

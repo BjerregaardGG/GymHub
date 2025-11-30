@@ -27,6 +27,9 @@ app.use("/api", userRouter);
 import prRouter from "./routers/prRouter.js";
 app.use("/api", prRouter);
 
+import workoutRouter from "./routers/workoutRouter.js";
+app.use("/api", workoutRouter);
+
 const PORT = 8080 || Number(process.env.PORT);
 app.listen(PORT, () => {
     console.log('Server running on port', PORT)

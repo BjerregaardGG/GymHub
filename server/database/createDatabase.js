@@ -95,19 +95,19 @@ if (deleteMode) {
 
      // Workout exercises
      // Nanna's Leg Day
-     db.run(`INSERT INTO workout_exercises (workout_id, name, sets, reps, weight) VALUES 
+     db.run(`INSERT INTO workout_exercises (workout_id, name, sets, reps, weight_kg) VALUES 
           (1, 'Squat', 4, 10, 60.0),
           (1, 'Lunges', 3, 12, 15.0),
           (1, 'Leg Press', 3, 10, 100.0)`);
 
      // Thomas' Chest & Back
-     db.run(`INSERT INTO workout_exercises (workout_id, name, sets, reps, weight) VALUES
+     db.run(`INSERT INTO workout_exercises (workout_id, name, sets, reps, weight_kg) VALUES
           (2, 'Bench Press', 4, 8, 85.0),
           (2, 'Pull-ups', 3, 12, NULL),
           (2, 'Barbell Rows', 3, 10, 60.0)`);
 
      // Phillip's Full Body
-     db.run(`INSERT INTO workout_exercises (workout_id, name, sets, reps, weight) VALUES
+     db.run(`INSERT INTO workout_exercises (workout_id, name, sets, reps, weight_kg) VALUES
           (3, 'Deadlift', 4, 6, 120.0),
           (3, 'Push-ups', 3, 15, NULL),
           (3, 'Running', 1, 1, NULL)`);
