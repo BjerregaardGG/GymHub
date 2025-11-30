@@ -25,6 +25,6 @@
     <label class="workout-label">Description:
         <input type="text" bind:value={workoutData.description} />
     </label>
-    <button type="submit" class="workout-button">Create workout</button>
+    <button type="submit" class="workout-button">Next</button>
 </form>
 

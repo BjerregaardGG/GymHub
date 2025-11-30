@@ -7,9 +7,11 @@
 
     import toastr from 'toastr';
     
-    let userTrainingData = {};
-    let profileData = {};
-    let formType = null;
+    let userTrainingData = $state({});
+    let workoutsData = $state([]); // Start med et tomt array
+    let exercises = $state({}); // Brug et objekt eller Map til exercises, organiseret efter workoutId
+    let profileData = $state({});
+    let formType = $state(null);
 
     // fetching pr data
     onMount(async() => {
@@ -22,6 +24,30 @@
             toastr.error("Could not load training data");
         }
     }); 
+
+    // fetching workouts
+    onMount(async() => {
+        const result = await getFetch("/api/workouts");
+
+        if (!result) {
+            toastr.error("Could not load workouts");
+        } else {
+            workoutsData = result.data; 
+            console.log(workoutsData);
+        }
+    });
+
+    /*
+    onMount(async() => {
+        const result = await getFetch(`/api/workouts/${workoutsData.data.id}/exercises`)
+
+        if (!result) {
+            toastr.error("Could not fetch exercises for workouts");
+        } else {
+            exercises = result.data; 
+            console.log(exercises);
+        }
+    }) */
 
     // fetching picture 
     onMount(async() => {
@@ -39,24 +65,43 @@
 
 <h1>Training Feed</h1>
 
-{#if profileData.image_path}
-    <img src={profileData.image_path} alt={`Profilbillede for ${profileData.name}`} id="profile-pic"/>
-{/if}
+
 
 {#if formType === null}
-<!-- We need to use Object.keys to turn our object into an array of its keys (bench_press, squat etc..)-->
-    {#if Object.keys(userTrainingData).length > 0}
-        <ul class="pr-list">
-        {#each Object.entries(userTrainingData) as [metric, value]} <li class="pr-item"><!-- Object.entries turns our objet into an array of arrays [metric, value] -> [bench_press, 110]-->
-            <strong>{metric.replace(/_/g, ' ').toUpperCase()}:</strong> {value} </li> <!-- Removes under_case-->
-        {/each}
-        </ul>
-    {:else}
-        <p>No training data yet.</p>
-    {/if}
-    
-    <button onclick={() => formType = "pr"}>Update PR data</button>
-    <button onclick={() => formType = "workout"}>Create workout</button>
+<div class="dashboard">
+    <div class="pr-section">
+        {#if Object.keys(userTrainingData).length > 0}
+            <ul class="pr-list">
+            {#each Object.entries(userTrainingData) as [metric, value]}
+                <li class="pr-item">
+                    <strong>{metric.replace(/_/g, ' ').toUpperCase()}:</strong> {value}
+                </li>
+            {/each}
+            </ul>
+        {:else}
+            <p>No training data yet.</p>
+        {/if}
+        <button onclick={() => formType = "pr"}>Update PR Data</button>
+    </div>
+
+    <div class="workouts-section">
+        <h2>Workouts</h2>
+        {#if workoutsData && workoutsData.length > 0}
+            <div class="workouts-list">
+                {#each workoutsData as workout}
+                    <div class="workout-card">
+                        <h3>{workout.title}</h3>
+                        <p>{workout.description}</p>
+                        <small>{new Date(workout.date_recorded).toLocaleDateString()}</small>
+                    </div>
+                {/each}
+            </div>
+        {:else}
+            <p>No workouts logged yet.</p>
+        {/if}
+        <button onclick={() => formType = "workout"}>Create Workout</button>
+    </div>
+</div>
 
 {:else if formType === "pr"}
     <PRForm {userTrainingData} onClose={() => formType = null}/>
@@ -121,6 +166,63 @@
         }
         .pr-item strong {
             color: #5aa7ff;
+        }
+    }
+
+    .workouts-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 0 10px;
+    }
+
+    .workout-card {
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        background-color: #fff;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .workout-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .workout-card h3 {
+        margin: 0 0 5px 0;
+        color: #1a4571;
+    }
+
+    .workout-card p {
+        margin: 0 0 5px 0;
+        color: #333;
+    }
+
+    .workout-card small {
+        color: #666;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .workouts-list {
+            gap: 12px;
+        }
+
+        .workout-card {
+            background-color: #1a1a1a;
+            border-color: #444;
+            color: #ddd;
+        }
+
+        .workout-card h3 {
+            color: #5aa7ff;
+        }
+
+        .workout-card p, .workout-card small {
+            color: #ccc;
         }
     }
 </style>

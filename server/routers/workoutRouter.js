@@ -3,7 +3,7 @@ import { isAuthorized } from '../middleware/authMiddleware.js';
 import db from "../database/connection.js";
 const router = Router();
 
-router.get("/workouts", isAuthorized, async (req, res) => {
+router.get("/", isAuthorized, async (req, res) => {
     const userId = req.session.user.id; 
 
     if (!userId) {
@@ -15,7 +15,7 @@ router.get("/workouts", isAuthorized, async (req, res) => {
     res.send({ data: userWorkouts, success: true, message: "Sucessfully fetched workouts" })
 })
 
-router.post("/workouts", isAuthorized, async (req, res) => {
+router.post("/", isAuthorized, async (req, res) => {
     const userId = req.session.user.id;
     const {title, description} = req.body; 
 
