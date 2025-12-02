@@ -2,8 +2,7 @@
     import { postFetch } from "../util/fetchUtil.js";
     import toastr from "toastr";
 
-    export let onClose; // callback from Parent (Home)
-    export let userTrainingData;
+    let {onClose, userTrainingData = $bindable()} = $props(); 
     
     async function updateTrainingData(event){
         event.preventDefault();

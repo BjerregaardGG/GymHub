@@ -28,9 +28,7 @@ import prRouter from "./routers/prRouter.js";
 app.use("/api", prRouter);
 
 import workoutRouter from "./routers/workoutRouter.js";
-import exerciseRouter from "./routers/workoutExercisesRouter.js"
-app.use("/api/workouts", workoutRouter);
-app.use("/api/workouts/:workoutId/exercises", exerciseRouter); 
+app.use("/api", workoutRouter);
 
 
 const PORT = 8080 || Number(process.env.PORT);

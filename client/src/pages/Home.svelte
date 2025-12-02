@@ -8,9 +8,12 @@
     import toastr from 'toastr';
     
     let userTrainingData = $state({});
-    let workoutsData = $state([]); // Start med et tomt array
-    let exercises = $state({}); // Brug et objekt eller Map til exercises, organiseret efter workoutId
-    let profileData = $state({});
+    let workoutsData = $state([]); 
+    let profileData = $state({
+        name: '',
+        image_path: ''
+    });
+
     let formType = $state(null);
 
     // fetching pr data
@@ -19,35 +22,25 @@
 
         if (result && result.success) {
             userTrainingData = result.data; 
-            console.log(userTrainingData);
+            console.log($state.snapshot(userTrainingData));
         } else {
             toastr.error("Could not load training data");
         }
     }); 
 
-    // fetching workouts
-    onMount(async() => {
+    // Reusable fetchWorkouts function
+    async function fetchWorkouts() {
         const result = await getFetch("/api/workouts");
 
         if (!result) {
             toastr.error("Could not load workouts");
         } else {
             workoutsData = result.data; 
-            console.log(workoutsData);
+            console.log("Workouts:", $state.snapshot(workoutsData));
         }
-    });
+    };
 
-    /*
-    onMount(async() => {
-        const result = await getFetch(`/api/workouts/${workoutsData.data.id}/exercises`)
-
-        if (!result) {
-            toastr.error("Could not fetch exercises for workouts");
-        } else {
-            exercises = result.data; 
-            console.log(exercises);
-        }
-    }) */
+    onMount(fetchWorkouts); // fetches workouts in the beginning 
 
     // fetching picture 
     onMount(async() => {
@@ -55,7 +48,6 @@
 
         if (result && result.success) {
             profileData = result.data; 
-            console.log(profileData);
         } else {
             toastr.error("Could not load profile data");
         }
@@ -65,7 +57,9 @@
 
 <h1>Training Feed</h1>
 
-
+{#if profileData.image_path}
+    <img src={profileData.image_path} alt={`Profilbillede for ${profileData.name}`} id="profile-pic"/>
+{/if}
 
 {#if formType === null}
 <div class="dashboard">
@@ -93,6 +87,21 @@
                         <h3>{workout.title}</h3>
                         <p>{workout.description}</p>
                         <small>{new Date(workout.date_recorded).toLocaleDateString()}</small>
+                        
+                        {#if workout.exercises.length > 0}
+                            <hr>
+                            <h4>Exercises:</h4>
+                            <ul>
+                            {#each workout.exercises as exercise}
+                                <li>
+                                    {exercise.name}:
+                                    (Sets: {exercise.sets}, Reps: {exercise.reps}, Vægt: {exercise.weight_kg}kg)
+                                </li>
+                            {/each}
+                            </ul>
+                        {:else}
+                            <p>No exercises registered</p>
+                        {/if}
                     </div>
                 {/each}
             </div>
@@ -104,16 +113,18 @@
 </div>
 
 {:else if formType === "pr"}
-    <PRForm {userTrainingData} onClose={() => formType = null}/>
+    <PRForm bind:userTrainingData={userTrainingData} onClose={() => formType = null}/>
     <button onclick={() => formType = null}>Cancel</button>
 
 {:else if formType === "workout"}
-    <WorkoutForm onClose={() => formType = null}/>
+    <WorkoutForm onClose={async () => {
+        formType = null;
+        await fetchWorkouts(); 
+    }}/>
     <button onclick={() => formType = null}>Cancel</button>
 {/if}
 
 <style>
-    
     .pr-list {
         list-style: none; 
         margin-top: 20px;
@@ -159,6 +170,7 @@
         margin-right: 20px;
     }
 
+    /* --- Dark Mode for PR-Sektion --- */
     @media (prefers-color-scheme: dark) {
         .pr-item {
             color: #dddddd;
@@ -171,14 +183,19 @@
 
     .workouts-list {
         display: flex;
-        flex-direction: column;
+        flex-direction: row; 
+        flex-wrap: wrap; 
         gap: 15px;
-        max-width: 600px;
+        
+        max-width: 100%;
         margin: 20px auto;
         padding: 0 10px;
+        justify-content: center; 
     }
 
     .workout-card {
+        width: 45%; 
+        
         padding: 15px;
         border: 1px solid #ddd;
         border-radius: 10px;
@@ -205,7 +222,44 @@
     .workout-card small {
         color: #666;
     }
+    
+    /* --- Styling for Exercises (Indlejret i workout-card) --- */
+    .workout-card hr {
+        border: 0;
+        border-top: 1px solid #eee; 
+        margin: 10px 0;
+    }
 
+    .workout-card h4 {
+        margin: 10px 0 5px 0;
+        color: #007bff; /* Fremhæver overskriften */
+        font-size: 1em;
+    }
+
+    .workout-card ul {
+        list-style: none;
+        padding: 0;
+        margin: 5px 0 0 0;
+    }
+
+    .workout-card li {
+        padding: 5px 0;
+        border-left: 3px solid #007bff; /* Visuel adskillelse */
+        padding-left: 10px;
+        margin-bottom: 3px;
+        font-size: 0.95em;
+        line-height: 1.4;
+    }
+    
+    /* --- Responsivt Design (Gå tilbage til én kolonne på mobil) --- */
+    @media (max-width: 700px) {
+        .workout-card {
+            width: 100%; /* Kortene fylder hele bredden */
+            min-width: unset;
+        }
+    }
+    
+    /* --- Dark Mode Justeringer for Workouts --- */
     @media (prefers-color-scheme: dark) {
         .workouts-list {
             gap: 12px;
@@ -224,5 +278,15 @@
         .workout-card p, .workout-card small {
             color: #ccc;
         }
+        
+        /* Dark Mode for Exercises */
+        .workout-card hr {
+            border-top: 1px solid #333; 
+        }
+        
+        .workout-card h4 {
+            color: #4da6ff;
+        }
+        
     }
 </style>

@@ -32,6 +32,7 @@ router.post("/pr", isAuthorized, async (req, res) => {
         if (user) {
             await db.run(updateQuery, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max, userId);
             return res.send({ success: true, message: "PR data updated" });
+            
         } else {
             // create new pr_data
             await db.run(postQuery, userId, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max);
