@@ -8,6 +8,7 @@ if (deleteMode) {
     db.exec(`DROP TABLE IF EXISTS workouts`);
     db.exec(`DROP TABLE IF EXISTS workout_exercises`);
     db.exec(`DROP TABLE IF EXISTS comments`);
+    db.exec(`DROP TABLE IF EXISTS user_relationships`);
 }
 
 // DDL
@@ -19,6 +20,16 @@ CREATE TABLE IF NOT EXISTS users (
     password TEXT,
     image_path TEXT,
     role TEXT CHECK(role IN ('ADMIN', 'TRAINER', 'USER'))
+);
+
+CREATE TABLE IF NOT EXISTS user_relationships (
+     id INTEGER PRIMARY KEY AUTOINCREMENT, 
+     user1_id INTEGER NOT NULL, 
+     user2_id INTEGER NOT NULL, 
+     relationship_type TEXT NOT NULL CHECK(relationship_type IN ('FRIENDS', 'CLIENT')), 
+     FOREIGN KEY (user1_id) REFERENCES users(id),
+     FOREIGN KEY (user2_id) REFERENCES users(id),
+     UNIQUE (user1_id, user2_id, relationship_type)
 );
 
 CREATE TABLE IF NOT EXISTS pr_data (
@@ -75,6 +86,20 @@ if (deleteMode) {
          '$2b$14$8KOIN.ZsiKUVDxnRolNCYeh7nmAHp3NzQnRNadhCZhq.fltxBgpAy', 'phillip_image.jpg', 'USER')`); // password
     db.run(`INSERT INTO users (id, name, email, password, role) VALUES (5, 'Olivia', 'olivia@gmail.com',
          '$2b$14$IU5LDgyyivGhKO0sX5Z2/.BR9.CdoJmyVgIHKotl3jvIiD7eiM1Nq', 'ADMIN')`); // youwillneverguess
+
+     // Nanna (2) and Thomas (3) are friends
+     db.run(`INSERT INTO user_relationships (user1_id, user2_id, relationship_type) VALUES 
+          (2, 3, 'FRIENDS')`);
+
+     db.run(`INSERT INTO user_relationships (user1_id, user2_id, relationship_type) VALUES 
+          (4, 1, 'FRIENDS')`);
+
+     // Olivia (5) is Nanna's trainer (2)
+     db.run(`INSERT INTO user_relationships (user1_id, user2_id, relationship_type) VALUES 
+          (2, 5, 'CLIENT')`);
+          
+     db.run(`INSERT INTO user_relationships (user1_id, user2_id, relationship_type) VALUES 
+          (1, 3, 'CLIENT')`);
          
      // PR Data
      // Nanna's PR

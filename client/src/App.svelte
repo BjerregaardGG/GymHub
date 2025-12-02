@@ -4,7 +4,9 @@
   import Home from "./pages/Home.svelte";
   import Clients from "./pages/Clients.svelte";
   import ResetPassword from "./pages/ResetPassword.svelte";
+  import WorkoutForm from "./components/WorkoutForm.svelte";
   import { postFetch } from "./util/fetchUtil";
+
   import toastr from "toastr";
 
   let loggedIn = false; 
@@ -22,6 +24,8 @@
     } 
   };
 
+
+
 </script>
 
 <Router>
@@ -31,6 +35,7 @@
         <div class="nav-left">
             <Link to="/">Home</Link>
             <Link to="/clients">Clients</Link>
+            <Link to="/postworkout">Post workout</Link>
         </div>
         
         <div class="nav-title">
@@ -38,7 +43,7 @@
         </div>
 
         <div class="nav-right">
-            <a href="/" on:click={handleSignOut}>Sign out</a>
+            <a href="/" onclick={handleSignOut}>Sign out</a>
         </div>
     </div>
   </nav>
@@ -62,6 +67,15 @@
      <Login bind:loggedIn></Login>
      {/if}
      </Route>
+
+     <Route path="/postworkout">
+      {#if loggedIn}
+      <WorkoutForm onClose={() => navigate("/")}></WorkoutForm>
+      <button onclick={() => navigate("/")} class="cancel-button">↩ Cancel</button>
+      {:else}
+      <Login bind:loggedIn></Login>
+      {/if}
+    </Route>
 
     <!-- Reset Password -->
      <Route path="/reset-password">

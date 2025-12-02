@@ -58,6 +58,20 @@ router.get("/users/prdata", isAuthorized, async (req, res) => {
     };
 
     res.send({ data: userData, success: true }); 
+}); 
+
+router.get("/users/friends", isAuthorized, async (req, res) => {
+    const userId = req.session.user.id; 
+
+    if (!userId) {
+        return res.status(401).send({ success: false, message: "Not authorized. You need to login"})
+    }
+
+    const friendRelationshipType = "FRIENDS";
+
+    const friendsIds = await db.all(`SELECT user2_id FROM user_relationships WHERE relationships_type = ?`, friendRelationshipType);
+
+    const friends = await db.all(`SELECT name FROM  `)
 
 })
 
