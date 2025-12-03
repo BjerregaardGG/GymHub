@@ -27,7 +27,6 @@
         workoutData.exercises = workoutData.exercises;
     }
 
-    
     async function createWorkout(event){
         event.preventDefault();
 
@@ -82,9 +81,6 @@
 </form>
 
 <style>
-    /* -------------------------------------- */
-    /* --- Generel Form Layout --- */
-    /* -------------------------------------- */
     .workout-form {
         max-width: 600px;
         margin: 20px auto;
@@ -110,9 +106,6 @@
         margin: 20px 0;
     }
 
-    /* -------------------------------------- */
-    /* --- Labels & Inputs --- */
-    /* -------------------------------------- */
     .workout-label {
         display: block;
         margin-bottom: 15px;
@@ -127,7 +120,7 @@
         margin-top: 5px;
         border: 1px solid #ccc;
         border-radius: 5px;
-        box-sizing: border-box; /* Sikrer at padding er inkluderet i bredden */
+        box-sizing: border-box; 
         transition: border-color 0.2s;
     }
 
@@ -137,9 +130,6 @@
         outline: none;
     }
 
-    /* -------------------------------------- */
-    /* --- Exercise Group Styling --- */
-    /* -------------------------------------- */
     .exercise-group {
         border: 1px solid #eee;
         padding: 15px;
@@ -159,7 +149,7 @@
 
     .exercise-group label {
         display: inline-block;
-        width: calc(50% - 10px); /* To labels pr. række */
+        width: calc(50% - 10px); 
         margin-right: 15px;
         margin-bottom: 10px;
         font-weight: 500;
@@ -170,19 +160,16 @@
         margin-top: 3px;
     }
 
-    /* Sørg for at den sidste label i en række ikke har margin */
     .exercise-group label:nth-child(2n) {
         margin-right: 0;
     }
     
-    /* Knap til fjernelse (positioneret for bedre UX) */
     .remove-button {
         background-color: #dc3545;
         color: white;
         border: none;
         padding: 8px 12px;
         font-size: 0.9em;
-        /* Positioneret i bunden af exercise-group */
         display: block;
         margin-top: 10px;
         margin-left: auto;
@@ -192,10 +179,6 @@
         background-color: #c82333;
     }
 
-
-    /* -------------------------------------- */
-    /* --- Hovedknapper --- */
-    /* -------------------------------------- */
     .workout-form button {
         width: 100%;
         margin-top: 10px;
@@ -206,7 +189,7 @@
     }
     
     .workout-button {
-        background-color: #28a745; /* Grøn farve for handling */
+        background-color: #28a745; 
         color: white;
         border-color: #28a745;
     }
@@ -217,7 +200,7 @@
     }
     
     .add-button {
-        background-color: #007bff; /* Blå farve for tilføjelse */
+        background-color: #007bff; 
         color: white;
         border-color: #007bff;
     }
@@ -227,9 +210,6 @@
         border-color: #0056b3;
     }
 
-    /* -------------------------------------- */
-    /* --- Dark Mode Overrides --- */
-    /* -------------------------------------- */
     @media (prefers-color-scheme: dark) {
         .workout-form {
             background-color: #1a1a1a;

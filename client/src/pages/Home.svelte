@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { getFetch } from "../util/fetchUtil.js";
+    import { calculateEmblems, getEmblemDescription } from '../util/calculateEmblems.js';
 
     import PRForm from '../components/PRForm.svelte';
     import WorkoutForm from '../components/WorkoutForm.svelte';
@@ -41,7 +42,7 @@
     };
 
     onMount(fetchWorkouts); // fetches workouts in the beginning 
-
+   
     // fetching picture 
     onMount(async() => {
         const result = await getFetch("/api/users/profile");
@@ -53,13 +54,39 @@
         }
     }); 
 
+    // makes sure that we recalculate everytime that the data changes
+    const emblems = $derived(calculateEmblems(workoutsData, userTrainingData));
+
+    // convert the emblems object to an array of symbols
+    const assignedEmblems = $derived(() => {
+    const entries = Object.entries(emblems); 
+    
+    const validSymbols = entries.filter(([key, value]) => value !== null);
+    
+    // maps to array of objects 
+    return validSymbols.map(([key, symbolPath]) => ({
+        key: key,
+        path: symbolPath
+    }));
+});
+
 </script>
 
 <h1>Training Feed</h1>
 
 {#if profileData.image_path}
-    <img src={profileData.image_path} alt={`Profilbillede for ${profileData.name}`} id="profile-pic"/>
+    <img src={profileData.image_path} alt={`Profile picture for ${profileData.name}`} id="profile-pic"/>
 {/if}
+
+<div class="emblems">
+    {#each assignedEmblems() as emblem (emblem.key) }
+        <img 
+            src={`./emblems/${emblem.path}`} 
+            alt={`Emblem for ${emblem.key}`}
+            class="badge-icon"
+            title={getEmblemDescription(emblem.key)}/>
+    {/each}
+</div>
 
 {#if formType === null}
 <div class="dashboard">
@@ -86,7 +113,7 @@
                     <div class="workout-card">
                         <h3>{workout.title}</h3>
                         <p>{workout.description}</p>
-                        <small>{new Date(workout.date_recorded).toLocaleDateString()}</small>
+                        <small>Posted: {new Date(workout.date_recorded).toLocaleDateString()}</small>
                         
                         {#if workout.exercises.length > 0}
                             <hr>
@@ -95,7 +122,7 @@
                             {#each workout.exercises as exercise}
                                 <li>
                                     {exercise.name}:
-                                    (Sets: {exercise.sets}, Reps: {exercise.reps}, Vægt: {exercise.weight_kg}kg)
+                                    Sets: {exercise.sets} - Reps: {exercise.reps} - Weight: {exercise.weight_kg}kg
                                 </li>
                             {/each}
                             </ul>
@@ -146,8 +173,31 @@
       transition: transform 0.3s ease-in-out;
     }
 
-     #profile-pic:hover {
+    #profile-pic:hover {
       transform: scale(1.05); 
+    }
+
+    .emblems {
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        gap: 8px; 
+        margin-top: 10px;
+        margin-bottom: 20px; 
+    }
+
+    .badge-icon {
+        width: 40px; 
+        height: 40px; 
+        object-fit: contain; 
+        border-radius: 50%; 
+        border: 2px solid #4CAF50; 
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+        transition: transform 0.2s;
+    }
+
+    .badge-icon:hover {
+        transform: scale(1.1);
     }
 
     .pr-item {
@@ -195,7 +245,6 @@
 
     .workout-card {
         width: 45%; 
-        
         padding: 15px;
         border: 1px solid #ddd;
         border-radius: 10px;
@@ -223,7 +272,6 @@
         color: #666;
     }
     
-    /* --- Styling for Exercises (Indlejret i workout-card) --- */
     .workout-card hr {
         border: 0;
         border-top: 1px solid #eee; 
@@ -232,7 +280,7 @@
 
     .workout-card h4 {
         margin: 10px 0 5px 0;
-        color: #007bff; /* Fremhæver overskriften */
+        color: #007bff; 
         font-size: 1em;
     }
 
@@ -244,22 +292,20 @@
 
     .workout-card li {
         padding: 5px 0;
-        border-left: 3px solid #007bff; /* Visuel adskillelse */
+        border-left: 1px solid #007bff; 
         padding-left: 10px;
         margin-bottom: 3px;
         font-size: 0.95em;
-        line-height: 1.4;
+        line-height: 1;
     }
     
-    /* --- Responsivt Design (Gå tilbage til én kolonne på mobil) --- */
     @media (max-width: 700px) {
         .workout-card {
-            width: 100%; /* Kortene fylder hele bredden */
+            width: 100%; 
             min-width: unset;
         }
     }
-    
-    /* --- Dark Mode Justeringer for Workouts --- */
+
     @media (prefers-color-scheme: dark) {
         .workouts-list {
             gap: 12px;
@@ -279,7 +325,6 @@
             color: #ccc;
         }
         
-        /* Dark Mode for Exercises */
         .workout-card hr {
             border-top: 1px solid #333; 
         }
