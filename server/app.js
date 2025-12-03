@@ -24,6 +24,9 @@ app.use(authRouter);
 import userRouter from "./routers/userRouter.js";
 app.use("/api", userRouter);
 
+import friendsRouter from "./routers/friendsRouter.js"
+app.use("/api", friendsRouter);
+
 import prRouter from "./routers/prRouter.js";
 app.use("/api", prRouter);
 

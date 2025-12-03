@@ -25,11 +25,10 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS user_relationships (
      id INTEGER PRIMARY KEY AUTOINCREMENT, 
      user1_id INTEGER NOT NULL, 
-     user2_id INTEGER NOT NULL, 
-     relationship_type TEXT NOT NULL CHECK(relationship_type IN ('FRIENDS', 'CLIENT')), 
+     user2_id INTEGER NOT NULL,  
      FOREIGN KEY (user1_id) REFERENCES users(id),
      FOREIGN KEY (user2_id) REFERENCES users(id),
-     UNIQUE (user1_id, user2_id, relationship_type)
+     UNIQUE (user1_id, user2_id)
 );
 
 CREATE TABLE IF NOT EXISTS pr_data (
@@ -88,19 +87,12 @@ if (deleteMode) {
          '$2b$14$IU5LDgyyivGhKO0sX5Z2/.BR9.CdoJmyVgIHKotl3jvIiD7eiM1Nq', 'ADMIN')`); // youwillneverguess
 
      // Nanna (2) and Thomas (3) are friends
-     db.run(`INSERT INTO user_relationships (user1_id, user2_id, relationship_type) VALUES 
-          (2, 3, 'FRIENDS')`);
+     db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
+          (2, 3)`);
 
-     db.run(`INSERT INTO user_relationships (user1_id, user2_id, relationship_type) VALUES 
-          (4, 1, 'FRIENDS')`);
+     db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
+          (4, 1)`);
 
-     // Olivia (5) is Nanna's trainer (2)
-     db.run(`INSERT INTO user_relationships (user1_id, user2_id, relationship_type) VALUES 
-          (2, 5, 'CLIENT')`);
-          
-     db.run(`INSERT INTO user_relationships (user1_id, user2_id, relationship_type) VALUES 
-          (1, 3, 'CLIENT')`);
-         
      // PR Data
      // Nanna's PR
      db.run(`INSERT INTO pr_data (user_id, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max)

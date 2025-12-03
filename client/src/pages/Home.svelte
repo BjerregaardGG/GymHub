@@ -14,7 +14,7 @@
         name: '',
         image_path: ''
     });
-
+    let friends = $state([]);
     let formType = $state(null);
 
     // fetching pr data
@@ -28,6 +28,17 @@
             toastr.error("Could not load training data");
         }
     }); 
+
+    onMount(async() => {
+        const result = await getFetch("/api/friends"); 
+
+        if (!result) {
+            toastr.error("Could not load friends"); 
+        } else {
+            friends = result.data; 
+            console.log($state.snapshot(friends));
+        }
+    });
 
     // Reusable fetchWorkouts function
     async function fetchWorkouts() {
@@ -103,6 +114,15 @@
             <p>No training data yet.</p>
         {/if}
         <button onclick={() => formType = "pr"}>Update PR Data</button>
+    </div>
+
+    <div class="friend-list">
+        {#each friends as friend }
+            <li class="friend-item">
+                <p>{friend.name}</p>
+                <img src={friend.image_path} alt={`Profile picture for ${friend.name}`} id="profile-pic"/>
+            </li>
+        {/each}
     </div>
 
     <div class="workouts-section">
