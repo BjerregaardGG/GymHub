@@ -91,6 +91,15 @@ if (deleteMode) {
           (2, 3)`);
 
      db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
+          (2, 1)`);
+     
+     db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
+          (2, 4)`);
+     
+     db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
+          (2, 5)`);
+
+     db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
           (4, 1)`);
 
      // PR Data

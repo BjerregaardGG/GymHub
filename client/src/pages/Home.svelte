@@ -7,13 +7,12 @@
     import WorkoutForm from '../components/WorkoutForm.svelte';
 
     import toastr from 'toastr';
+    import FriendList from '../components/FriendList.svelte';
+    import PRList from '../components/PRList.svelte';
     
     let userTrainingData = $state({});
     let workoutsData = $state([]); 
-    let profileData = $state({
-        name: '',
-        image_path: ''
-    });
+    let profileData = $state({ name: '', image_path: '' });
     let friends = $state([]);
     let formType = $state(null);
 
@@ -70,86 +69,72 @@
 
     // convert the emblems object to an array of symbols
     const assignedEmblems = $derived(() => {
-    const entries = Object.entries(emblems); 
+        const entries = Object.entries(emblems); 
     
-    const validSymbols = entries.filter(([key, value]) => value !== null);
+        const validSymbols = entries.filter(([key, value]) => value !== null);
     
-    // maps to array of objects 
-    return validSymbols.map(([key, symbolPath]) => ({
-        key: key,
-        path: symbolPath
-    }));
-});
-
+        // maps to array of objects 
+        return validSymbols.map(([key, symbolPath]) => ({
+            key: key,
+            path: symbolPath
+        }));
+    });
 </script>
-
-<h1>Training Feed</h1>
-
-{#if profileData.image_path}
-    <img src={profileData.image_path} alt={`Profile picture for ${profileData.name}`} id="profile-pic"/>
-{/if}
-
-<div class="emblems">
-    {#each assignedEmblems() as emblem (emblem.key) }
-        <img 
-            src={`./emblems/${emblem.path}`} 
-            alt={`Emblem for ${emblem.key}`}
-            class="badge-icon"
-            title={getEmblemDescription(emblem.key)}/>
-    {/each}
-</div>
 
 {#if formType === null}
 <div class="dashboard">
-    <div class="pr-section">
-        {#if Object.keys(userTrainingData).length > 0}
-            <ul class="pr-list">
-            {#each Object.entries(userTrainingData) as [metric, value]}
-                <li class="pr-item">
-                    <strong>{metric.replace(/_/g, ' ').toUpperCase()}:</strong> {value}
-                </li>
-            {/each}
-            </ul>
-        {:else}
-            <p>No training data yet.</p>
-        {/if}
-        <button onclick={() => formType = "pr"}>Update PR Data</button>
-    </div>
+    <div class="content-layout"> 
+        <div class="left-column"> 
+            <h1>Training Feed</h1>
 
-    <div class="friend-list">
-        {#each friends as friend }
-            <li class="friend-item">
-                <p>{friend.name}</p>
-                <img src={friend.image_path} alt={`Profile picture for ${friend.name}`} id="profile-pic"/>
-            </li>
-        {/each}
-    </div>
+            {#if profileData.image_path}
+                <img src={profileData.image_path} alt={`Profile picture for ${profileData.name}`} id="profile-pic"/>
+            {/if}
 
-    <div class="workouts-section">
+                <div class="emblems">
+                {#each assignedEmblems() as emblem (emblem.key) }
+                <img 
+                    src={`./emblems/${emblem.path}`} 
+                    alt={`Emblem for ${emblem.key}`}
+                    class="badge-icon"
+                    title={getEmblemDescription(emblem.key)}
+                />
+                {/each}
+
+                </div>
+                   <PRList {userTrainingData} onUpdatePr={() => formType = "pr"} ></PRList>
+                </div>
+
+        <div class="right-column">
+            <FriendList {friends}></FriendList>
+        </div>
+
+    </div> 
+    <div class="workouts-section full-width">
         <h2>Workouts</h2>
         {#if workoutsData && workoutsData.length > 0}
             <div class="workouts-list">
                 {#each workoutsData as workout}
-                    <div class="workout-card">
-                        <h3>{workout.title}</h3>
-                        <p>{workout.description}</p>
-                        <small>Posted: {new Date(workout.date_recorded).toLocaleDateString()}</small>
-                        
-                        {#if workout.exercises.length > 0}
-                            <hr>
-                            <h4>Exercises:</h4>
-                            <ul>
-                            {#each workout.exercises as exercise}
-                                <li>
-                                    {exercise.name}:
-                                    Sets: {exercise.sets} - Reps: {exercise.reps} - Weight: {exercise.weight_kg}kg
-                                </li>
-                            {/each}
-                            </ul>
-                        {:else}
-                            <p>No exercises registered</p>
-                        {/if}
-                    </div>
+                <div class="workout-card">
+                    <h3>{workout.title}</h3>
+                    <p>{workout.description}</p>
+                    <small>Posted: {new Date(workout.date_recorded).toLocaleDateString()}</small>
+                    
+                    {#if workout.exercises.length > 0}
+                        <hr>
+                        <h4>Exercises:</h4>
+                        <ul>
+                        {#each workout.exercises as exercise}
+                            <li>
+                                {exercise.name}:
+                                Sets: {exercise.sets} - Reps: {exercise.reps} - Weight: {exercise.weight_kg}kg
+                            </li>
+                        {/each}
+                        </ul>
+                    {:else}
+                        <p>No exercises registered</p>
+                    {/if}
+                </div>
                 {/each}
             </div>
         {:else}
@@ -172,29 +157,63 @@
 {/if}
 
 <style>
-    .pr-list {
-        list-style: none; 
-        margin-top: 20px;
-        margin-bottom: 20px;
-        max-width: 500px; 
-        margin-left: auto;
-        margin-right: auto;
-        padding: 0 20px; 
+    /* General layout */
+    .content-layout {
+        display: flex;
+        gap: 10px;
+        padding: 20px;
+        max-width: 1100px; 
+        margin: 0 auto;
     }
 
+    .left-column {
+        flex: 2; 
+        min-width: 0; 
+        text-align: center;
+    }
+
+    .right-column {
+        flex: 1; 
+        min-width: 250px; 
+    }
+
+    .workouts-section.full-width {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 0 20px;
+        text-align: center;
+    }
+    
+    /* For phone */
+    @media (max-width: 900px) {
+        .content-layout {
+            flex-direction: column;
+            padding: 10px;
+        }
+        
+        .right-column {
+            min-width: unset;
+        }
+
+        .workouts-section.full-width {
+            padding: 0 10px;
+        }
+    }
+
+    /* Profile & Emblems */
     #profile-pic {
-      width: 150px; 
-      height: 150px; 
-      object-fit: cover; 
-      border-radius: 50%; 
-      border: 4px solid #4CAF50; 
-      box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); 
-      margin-bottom: 10px; 
-      transition: transform 0.3s ease-in-out;
+        width: 150px; 
+        height: 150px; 
+        object-fit: cover; 
+        border-radius: 50%; 
+        border: 4px solid #4CAF50; 
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); 
+        margin-bottom: 10px; 
+        transition: transform 0.3s ease-in-out;
     }
 
     #profile-pic:hover {
-      transform: scale(1.05); 
+        transform: scale(1.05); 
     }
 
     .emblems {
@@ -220,43 +239,12 @@
         transform: scale(1.1);
     }
 
-    .pr-item {
-        padding: 8px 0;
-        border-bottom: 1px solid #eeeeee; 
-        display: flex; 
-        justify-content: space-between; 
-        font-size: 1.1em;
-        color: #333;
-        align-items: center;
-    }
-
-    .pr-item:last-child {
-        border-bottom: none; 
-    }
-
-    .pr-item strong {
-        font-weight: 600; 
-        color: #1a4571; 
-        margin-right: 20px;
-    }
-
-    /* --- Dark Mode for PR-Sektion --- */
-    @media (prefers-color-scheme: dark) {
-        .pr-item {
-            color: #dddddd;
-            border-bottom: 1px solid #444444;
-        }
-        .pr-item strong {
-            color: #5aa7ff;
-        }
-    }
-
+    /* Workouts Sektion */
     .workouts-list {
         display: flex;
         flex-direction: row; 
         flex-wrap: wrap; 
         gap: 15px;
-        
         max-width: 100%;
         margin: 20px auto;
         padding: 0 10px;
@@ -325,7 +313,8 @@
             min-width: unset;
         }
     }
-
+    
+    /* Dark Mode */
     @media (prefers-color-scheme: dark) {
         .workouts-list {
             gap: 12px;
@@ -352,6 +341,5 @@
         .workout-card h4 {
             color: #4da6ff;
         }
-        
     }
 </style>

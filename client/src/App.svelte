@@ -23,6 +23,7 @@
       toastr.error(result.message)
     } 
   };
+  
 </script>
 
 <Router>

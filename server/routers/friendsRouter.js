@@ -14,9 +14,8 @@ router.get("/friends", isAuthorized, async (req, res) => {
         SELECT 
             u.id, 
             u.name, 
-            u.image_path,
+            u.image_path
         FROM users u
-
         INNER JOIN user_relationships ur
         ON (
             (ur.user2_id = u.id AND ur.user1_id = ?) OR 

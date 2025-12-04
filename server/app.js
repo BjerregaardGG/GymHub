@@ -2,6 +2,16 @@ import 'dotenv/config';
 import express from 'express';
 const app = express();
 
+/*
+
+import {Server} from 'socket.io'
+const io = new Sever(server, {
+    cors: {
+        origin: ["http://localhost:8080"]
+    };
+});
+*/
+
 app.use(express.json()); 
 app.use(express.static("public"));
 
@@ -32,7 +42,6 @@ app.use("/api", prRouter);
 
 import workoutRouter from "./routers/workoutRouter.js";
 app.use("/api", workoutRouter);
-
 
 const PORT = 8080 || Number(process.env.PORT);
 app.listen(PORT, () => {
