@@ -3,6 +3,7 @@
   import Login from "./pages/Login.svelte";
   import Home from "./pages/Home.svelte";
   import Clients from "./pages/Clients.svelte";
+  import Friend from "./pages/Friend.svelte";
   import ResetPassword from "./pages/ResetPassword.svelte";
   import WorkoutForm from "./components/WorkoutForm.svelte";
   import { postFetch } from "./util/fetchUtil";
@@ -49,7 +50,7 @@
 
   <div>
     <!-- Home -->
-     <Route path="/">
+    <Route path="/">
       {#if loggedIn}
         <Home> </Home>
       {:else}
@@ -58,15 +59,16 @@
     </Route>
 
     <!-- Users -->
-     <Route path="/clients">
+    <Route path="/clients">
      {#if loggedIn}
       <Clients></Clients>
      {:else}
      <Login bind:loggedIn></Login>
      {/if}
-     </Route>
+    </Route>
 
-     <Route path="/postworkout">
+     <!-- Post Workout Form-->
+    <Route path="/postworkout">
       {#if loggedIn}
       <WorkoutForm onClose={() => navigate("/")}></WorkoutForm>
       <button onclick={() => navigate("/")} class="cancel-button">↩ Cancel</button>
@@ -75,8 +77,16 @@
       {/if}
     </Route>
 
+    <Route path="/profile/:id" let:params>
+      {#if loggedIn}
+      <Friend id={params.id}></Friend>
+      {:else}
+      <Login bind:loggedIn></Login>
+      {/if}
+    </Route>
+
     <!-- Reset Password -->
-     <Route path="/reset-password">
+    <Route path="/reset-password">
      {#if loggedIn}
      <Home> </Home>
      {:else}

@@ -24,7 +24,21 @@ router.get("/users/profile", isAuthorized, async (req, res) => {
     res.send({ data: userData, success: true});
 });
 
-router.get("/users/prdata", isAuthorized, async (req, res) => {    
+router.get("/users/profile/:id", isAuthorized, async (req, res) => {
+    const userId = req.params.id; 
+
+    if (!userId) {
+        return res.status(401).send({ success: false, message: "Could not find user"});
+    }
+
+    const users = await db.all(`SELECT name, image_path FROM users WHERE id = ?;`, userId);
+
+    const userData = users[0];
+
+    res.send({ data: userData, success: true});
+})
+
+router.get("/users/prdata", isAuthorized, async (req, res) => { 
     const userId = req.session.user.id; 
 
     if (!userId) {
@@ -53,11 +67,57 @@ router.get("/users/prdata", isAuthorized, async (req, res) => {
 
     const userData = userTrainingData[0]; 
 
+    if (!userData) {
+        return res.status(404).send({ success: false, message: "User not found" });
+    }
+
     if (userData.bench_press_kg === null && userData.squat_kg === null) {
         return res.send({ data: {}, success: true, message: "User found, but no training data to show" });
     };
 
     res.send({ data: userData, success: true }); 
 }); 
+
+
+router.get("/users/prdata/:userId", isAuthorized, async (req, res) => { 
+    const userId = req.params.userId;
+
+    if (!userId) {
+        return res.status(401).send({ success: false, message: "Could not find user"})
+    }
+
+    const trainingDataQuery = `
+        SELECT 
+            u.name, p.bench_press_kg, p.squat_kg, p.deadlift_kg, p.run_5k_min, p.pull_ups_max
+        FROM 
+            users u
+        LEFT JOIN
+            pr_data p ON u.id = p.user_id
+        WHERE
+            u.id = ?;
+    `;
+
+    let userTrainingData; 
+
+    try {
+        userTrainingData = await db.all(trainingDataQuery, userId );
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ success: false, message: "Could not fetch training data" });
+    };
+
+    const userData = userTrainingData[0]; 
+
+    if (!userData) {
+        return res.status(404).send({ success: false, message: "User not found" });
+    }
+
+    if (userData.bench_press_kg === null && userData.squat_kg === null) {
+        return res.send({ data: {}, success: true, message: "User found, but no training data to show" });
+    };
+
+    res.send({ data: userData, success: true }); 
+}); 
+
 
 export default router;

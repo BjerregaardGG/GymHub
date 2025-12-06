@@ -1,5 +1,5 @@
 <script>
-
+    import { Link } from "svelte-routing"
     let { friends } = $props();
 
 </script>
@@ -9,7 +9,9 @@
     <ul class="friend-list-ul"> 
         {#each friends as friend }
             <li class="friend-item">
-                <p>{friend.name}</p>
+                <Link to={`/profile/${friend.id}`} class="friend-link" title={`Go to ${friend.name}'s profile`}>
+                    <p class="friend-name-text">{friend.name}</p>
+                </Link>
                 <img 
                     src={friend.image_path} 
                     alt={`Profile picture for ${friend.name}`} 
