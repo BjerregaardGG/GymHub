@@ -1,5 +1,5 @@
 <script>
-    import { calculateEmblems, getEmblemDescription } from "../util/calculateEmblems.js";
+    import { calculateEmblems, getEmblemDescription } from "../../util/calculateEmblems.js";
     let {profileData, workoutsData, userTrainingData} = $props();
 
     // makes sure that we recalculate everytime that the data changes
@@ -20,15 +20,18 @@
 
 </script>
 
-<h1>Training Feed</h1>
+<h1>{profileData.name}'s Training Feed</h1>
 
 {#if profileData.image_path}
-    <img src={profileData.image_path} alt={`Profile picture for ${profileData.name}`} id="profile-pic"/>
+    <img src={`${import.meta.env.VITE_BASE_URL}${profileData.image_path}`} 
+    alt={`Profile picture for ${profileData.name}`} 
+    id="profile-pic"/>
 {/if}
+
     <div class="emblems">
         {#each assignedEmblems() as emblem (emblem.key) }
             <img 
-                src={`./emblems/${emblem.path}`} 
+                src={`/emblems/${emblem.path}`} 
                 alt={`Emblem for ${emblem.key}`}
                 class="badge-icon"
                 title={getEmblemDescription(emblem.key)}

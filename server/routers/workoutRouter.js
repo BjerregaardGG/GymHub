@@ -3,12 +3,44 @@ import { isAuthorized } from '../middleware/authMiddleware.js';
 import db from "../database/connection.js";
 const router = Router();
 
-// collects the workouts and their exercises 
+// collects the workouts and their exercises for the logged in user
 router.get("/workouts", isAuthorized, async (req, res) => {
     const userId = req.session.user.id; 
 
     if (!userId) {
         return res.status(401).send({ success: false, message: "Not authorized. You need to login"})
+    }
+
+    const userWorkouts = await db.all(`SELECT * FROM workouts WHERE user_id = ?`, userId);
+
+    if (userWorkouts.length === 0) {
+        return res.send({ data: [], success: true, message: "No workouts found" });
+    }
+
+    const workoutsPlusExercisesPromises = userWorkouts.map(async (workout) => {
+        const exercises = await db.all(
+            `SELECT * FROM workout_exercises WHERE workout_id = ?`, 
+            workout.id
+        );
+
+        return { ...workout, exercises: exercises };
+    });
+
+    const workoutsPlusExercises = await Promise.all(workoutsPlusExercisesPromises);
+
+    res.send({ 
+        data: workoutsPlusExercises, 
+        success: true, 
+        message: "Successfully fetched workouts with exercises" 
+    });
+});
+
+// collects the workouts a specific user
+router.get("/workouts/:id", isAuthorized, async (req, res) => {
+    const userId = req.params.id;
+
+    if (!userId) {
+        return res.status(401).send({ success: false, message: "User not found"})
     }
 
     const userWorkouts = await db.all(`SELECT * FROM workouts WHERE user_id = ?`, userId);

@@ -3,7 +3,7 @@ import { rateLimit } from 'express-rate-limit' // sets a limit for how many time
 // The generel rateLimit 
 export const genralLimiter = rateLimit({
 	windowMs: 15 * 60 * 1000, // 15 minutes
-	limit: 100, // Limit each IP to 100 requests per `window` 
+	limit: 200, // Limit each IP to 100 requests per `window` 
 	standardHeaders: 'draft-8', 
 	legacyHeaders: false, 
 	ipv6Subnet: 56, 

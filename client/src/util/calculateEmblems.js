@@ -1,3 +1,4 @@
+
 export function calculateEmblems(workouts, prData){
 
     const trainingSymbols = {
@@ -34,7 +35,6 @@ export function calculateEmblems(workouts, prData){
         if (runRecord < 25) {
             trainingSymbols.fiveKmRun = fiveKmRunPicture;
         }
-
     };
 
     return trainingSymbols; 
@@ -43,13 +43,13 @@ export function calculateEmblems(workouts, prData){
 export function getEmblemDescription(key) {
     switch (key) {
         case 'firstTrainingSymbol':
-            return "You posted your first workout!";
+            return "First workout badge!";
         case 'fiveTrainingsSymbol':
-            return "You posted five workouts!";
+            return "Five workouts badge!";
         case 'benchSymbol':
-            return "You did a 100kg bench press!";
+            return "100kg bench press badge!";
         case 'fiveKmRun':
-            return "You ran a 5 k in under 25 minutes!";
+            return "5 k in under 25 minutes badge!";
         default:
             return "No emblem";
     }

@@ -1,8 +1,10 @@
 <script>
-    let { userTrainingData, onUpdatePr } = $props();
+    let { userTrainingData, onUpdatePr=null, canUpdate=true } = $props();
     
     function handleUpdateButton(){
-        onUpdatePr();
+        if(onUpdatePr) {
+            onUpdatePr();
+        }
     }
 
 </script>
@@ -19,7 +21,10 @@
     {:else}
         <p>No training data yet.</p>
     {/if}
+
+    {#if canUpdate}
     <button onclick={handleUpdateButton}>Update PR Data</button>
+    {/if}
 </div>
 
 <style>

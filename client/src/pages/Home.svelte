@@ -5,12 +5,14 @@
     import { onMount } from 'svelte';
     import { getFetch } from "../util/fetchUtil.js";
 
-    import PRForm from '../components/PRForm.svelte';
-    import WorkoutForm from '../components/WorkoutForm.svelte';
-    import FriendList from '../components/FriendList.svelte';
-    import PRList from '../components/PRList.svelte';
-    import WorkoutList from '../components/WorkoutList.svelte';
-    import ProfileFeed from '../components/ProfileFeed.svelte';
+    import PRForm from '../components/forms/PRForm.svelte';
+    import WorkoutForm from '../components/forms/WorkoutForm.svelte';
+    import SearchBar from '../components/SearchBar.svelte'
+
+    import FriendList from '../components/feeds/FriendList.svelte';
+    import PRList from '../components/feeds/PRList.svelte';
+    import WorkoutList from '../components/feeds/WorkoutList.svelte';
+    import ProfileFeed from '../components/feeds/ProfileFeed.svelte';
     
     let userTrainingData = $state({});
     let workoutsData = $state([]); 
@@ -43,8 +45,7 @@
         };
     });
 
-    // fetching pr data
-    onMount(async() => {
+    async function loadPRData(){
         const result = await getFetch("/api/users/prdata");
 
         if (result && result.success) {
@@ -53,10 +54,9 @@
         } else {
             toastr.error("Could not load training data");
         }
-    }); 
+    }; 
 
-    // fetching friends
-    onMount(async() => {
+    async function loadFriends(){
         const result = await getFetch("/api/friends"); 
 
         if (!result) {
@@ -65,10 +65,9 @@
             friends = result.data; 
             console.log($state.snapshot(friends));
         }
-    });
+    };
 
-    // Reusable fetchWorkouts function
-    async function fetchWorkouts() {
+    async function loadWorkouts(){
         const result = await getFetch("/api/workouts");
 
         if (!result) {
@@ -79,10 +78,7 @@
         }
     };
 
-    onMount(fetchWorkouts); // fetches workouts in the beginning 
-   
-    // fetching picture 
-    onMount(async() => {
+    async function loadProfile(){
         const result = await getFetch("/api/users/profile");
 
         if (result && result.success) {
@@ -90,7 +86,13 @@
         } else {
             toastr.error("Could not load profile data");
         }
-    }); 
+    };
+
+    onMount(loadProfile);
+    onMount(loadFriends);
+    onMount(loadPRData);
+    onMount(loadWorkouts);
+   
 
 </script>
 {#if formType === null}
@@ -98,14 +100,15 @@
         <div class="content-layout"> 
             <div class="left-column"> 
                 <ProfileFeed {profileData} {userTrainingData} {workoutsData}></ProfileFeed>
-                <PRList {userTrainingData} onUpdatePr={() => formType = "pr"} ></PRList>
+                <PRList {userTrainingData} onUpdatePr={() => formType = "pr"} canUpdate={true} ></PRList>
             </div>
             <div class="right-column">
                 <FriendList {friends}></FriendList>
+                <SearchBar></SearchBar>
             </div>
         </div> 
         <div class="workouts-section full-width">
-            <WorkoutList {workoutsData} onUpdateWorkout={() => formType = "workout"}></WorkoutList>
+            <WorkoutList {workoutsData} onUpdateWorkout={() => formType = "workout"} canUpdate={true}></WorkoutList>
         </div>
     </div>
 
@@ -116,7 +119,7 @@
 {:else if formType === "workout"}
     <WorkoutForm onClose={async () => {
         formType = null;
-        await fetchWorkouts(); 
+        await loadWorkouts(); 
     }}/>
     <button onclick={() => formType = null}>Cancel</button>
 {/if}

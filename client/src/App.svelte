@@ -5,7 +5,7 @@
   import Clients from "./pages/Clients.svelte";
   import Friend from "./pages/Friend.svelte";
   import ResetPassword from "./pages/ResetPassword.svelte";
-  import WorkoutForm from "./components/WorkoutForm.svelte";
+  import WorkoutForm from "./components/forms/WorkoutForm.svelte";
   import { postFetch } from "./util/fetchUtil";
 
   import toastr from "toastr";

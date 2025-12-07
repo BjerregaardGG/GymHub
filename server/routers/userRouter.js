@@ -3,7 +3,7 @@ import { isAuthorized, isAdmin } from '../middleware/authMiddleware.js';
 import db from "../database/connection.js";
 const router = Router();
 
-router.get("/users", isAuthorized, isAdmin, async (req, res) => {
+router.get("/users", isAuthorized, async (req, res) => {
 
     const userData = await db.all('SELECT id, name, role FROM users');
 
@@ -47,13 +47,11 @@ router.get("/users/prdata", isAuthorized, async (req, res) => {
 
     const trainingDataQuery = `
         SELECT 
-            u.name, p.bench_press_kg, p.squat_kg, p.deadlift_kg, p.run_5k_min, p.pull_ups_max
+            bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max
         FROM 
-            users u
-        LEFT JOIN
-            pr_data p ON u.id = p.user_id
-        WHERE
-            u.id = ?;
+            pr_data 
+        WHERE 
+            id = ?
     `;
 
     let userTrainingData; 
@@ -88,13 +86,11 @@ router.get("/users/prdata/:userId", isAuthorized, async (req, res) => {
 
     const trainingDataQuery = `
         SELECT 
-            u.name, p.bench_press_kg, p.squat_kg, p.deadlift_kg, p.run_5k_min, p.pull_ups_max
+            bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max
         FROM 
-            users u
-        LEFT JOIN
-            pr_data p ON u.id = p.user_id
-        WHERE
-            u.id = ?;
+            pr_data 
+        WHERE 
+            id = ?
     `;
 
     let userTrainingData; 
@@ -118,6 +114,5 @@ router.get("/users/prdata/:userId", isAuthorized, async (req, res) => {
 
     res.send({ data: userData, success: true }); 
 }); 
-
 
 export default router;

@@ -1,9 +1,11 @@
 <script>
 
-    let {workoutsData, onUpdateWorkout} = $props();
+    let {workoutsData, onUpdateWorkout = null, canUpdate = true} = $props();
 
     function updateWorkout(){
-        onUpdateWorkout();
+        if (canUpdate) {
+            onUpdateWorkout();
+        }
     }
 
 </script>
@@ -37,7 +39,10 @@
 {:else}
     <p>No workouts logged yet.</p>
 {/if}
-<button onclick={updateWorkout}>Create Workout</button>
+
+{#if canUpdate}
+    <button onclick={updateWorkout}>Create Workout</button>
+{/if}
 
 <style>
     .workouts-list {

@@ -1,5 +1,5 @@
 <script>
-    import { postFetch } from "../util/fetchUtil.js";
+    import { postFetch } from "../../util/fetchUtil.js";
     import toastr from "toastr";
 
     let {onClose} = $props(); // callback from Parent (Home)

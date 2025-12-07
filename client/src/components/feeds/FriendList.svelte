@@ -13,7 +13,7 @@
                     <p class="friend-name-text">{friend.name}</p>
                 </Link>
                 <img 
-                    src={friend.image_path} 
+                    src={`${import.meta.env.VITE_BASE_URL}${friend.image_path}`} 
                     alt={`Profile picture for ${friend.name}`} 
                     id="profile-pic-small"
                     class:online={friend.isOnline}

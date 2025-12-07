@@ -10,6 +10,7 @@ const onlineUsers = {};
 
 app.use(express.json()); 
 app.use(express.static("public"));
+app.use("/uploads", express.static("uploads")) // profile pictures
 
 import cors from 'cors';
 app.use(cors({
