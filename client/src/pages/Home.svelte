@@ -104,7 +104,7 @@
             </div>
             <div class="right-column">
                 <FriendList {friends}></FriendList>
-                <SearchBar></SearchBar>
+                <SearchBar {friends}></SearchBar>
             </div>
         </div> 
         <div class="workouts-section full-width">
