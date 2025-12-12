@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import { getFetch } from "../util/fetchUtil.js"; 
     import toastr from 'toastr';
-    import {Link} from "svelte-routing";
+    import { Link } from "svelte-routing";
 
     let { friends } = $props();
     let username = $state("");
@@ -50,9 +50,10 @@
                             <p class="friend-name-text">{user.name}</p>
                         </Link>
                     {:else}
-                        <Link to={`/profile/${user.id}`} class="friend-link" title={`Go to ${user.name}'s profile`}>
-                            <p class="friend-name-text">{user.name}</p>
-                        </Link>
+                        <p class="friend-name-text not-friend">{user.name}</p>
+                        <button onclick={() => addFriend(user.id)} title="Send friend request">
+                            Add Friend
+                        </button>
                     {/if}
                 </li>
                 {/each}
@@ -64,9 +65,6 @@
 </div>
 
 <style>
-    /* ---------------------------------
-     * SEARCH CONTAINER & INPUT
-     * --------------------------------- */
     .user-search {
         position: relative;
         width: 300px;
@@ -83,9 +81,6 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
-    /* ---------------------------------
-     * SEARCH RESULTS LIST (UL)
-     * --------------------------------- */
     .search-results {
         position: absolute;
         width: 100%;
@@ -108,9 +103,6 @@
         font-style: italic;
     }
 
-    /* ---------------------------------
-     * LIST ITEM (LI) STYLING
-     * --------------------------------- */
     .search-results li {
         display: flex; /* Gør listeelementet til en flex-container */
         justify-content: space-between; /* Fordel indholdet */
@@ -124,10 +116,7 @@
         background-color: #f6f6f6;
     }
 
-    /* ---------------------------------
-     * NAME LINK & TEXT STYLING
-     * --------------------------------- */
-    .friend-link {
+    :global(.friend-link) {
         /* Gælder når brugeren er ven (indeholder kun P-tag) */
         text-decoration: none;
         color: #333;
@@ -135,24 +124,27 @@
         margin-right: 10px; /* Afstand til højre for linket */
     }
     
-    /* Gælder når brugeren IKKE er ven (P-tag er ikke en del af <Link>) */
-    .search-results li p {
+    /* Gælder for alle navne tekster, både klikbare (venner) og ikke-klikbare (ikke-venner) */
+    .friend-name-text {
         margin: 0;
         font-weight: 500;
-        flex-grow: 1; /* Tillader navnet at udfylde pladsen */
-        cursor: pointer;
-    }
-    
-    .friend-link:hover .friend-name-text,
-    .search-results li p:hover {
-         /* Visuel indikation af, at navnet er klikbart */
-        color: #007bff;
-        text-decoration: none; 
+        /* Flex-grow er ikke nødvendig her, da linket/p-taggen allerede gør det */
     }
 
-    /* ---------------------------------
-     * ACTION BUTTON (Add friend)
-     * --------------------------------- */
+    /* NYT: Sørger for, at navnet (P-taggen) for IKKE-venner ikke ligner et link */
+    .not-friend {
+        flex-grow: 1; /* Udfyld pladsen ved siden af knappen */
+        cursor: default; /* Fjern pegefinger-markøren */
+        margin-right: 10px; /* Afstand til knappen */
+    }
+    
+    :global(.friend-link):hover .friend-name-text {
+         /* Visuel indikation af, at navnet er klikbart (kun for venner) */
+        color: #007bff;
+        text-decoration: none; 
+        cursor: pointer;
+    }
+
     button {
         background-color: #4CAF50;
         color: white;
@@ -163,6 +155,9 @@
         cursor: pointer;
         transition: background-color 0.2s;
         flex-shrink: 0; /* Sikrer at knappen ikke bliver klemt */
+        /* NYT: Justering for at undgå at knappen fylder for meget */
+        line-height: 1.2; 
+        font-size: 0.9em;
     }
 
     button:hover {
@@ -182,11 +177,10 @@
         .search-results li:hover {
             background-color: #383838;
         }
-        .friend-link, .search-results li p {
+        :global(.friend-link), .friend-name-text {
             color: #ccc;
         }
-        .friend-link:hover .friend-name-text,
-        .search-results li p:hover {
+        :global(.friend-link):hover .friend-name-text {
             color: #72baff;
         }
     }
