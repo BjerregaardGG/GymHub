@@ -22,4 +22,28 @@ router.get("/comments/:workoutid", isAuthorized, async (req, res) => {
 
 });
 
+router.post("/comments", isAuthorized, async(req, res) => {
+    const userId = req.session.user.id; 
+    const {comment, workout_id} = req.body;
+
+    if (!userId) {
+        return res.status(401).send({ success: false, message: "Not authorized. You need to login."});
+    }
+
+    try {
+        const postCommentQuery = `
+            INSERT INTO comments
+            (workout_id, user_id, comment) 
+            VALUES (?, ?, ?)
+        `
+        await db.run(postCommentQuery, workout_id, userId, comment);
+        
+        return res.send({ success: true, message: "Workout created" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ success: false, message: "Database error" });
+    }
+});
+
 export default router;

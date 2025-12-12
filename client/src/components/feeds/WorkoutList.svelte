@@ -1,8 +1,9 @@
 <script>
+    import CommentForm from "../forms/CommentForm.svelte";
     import WorkoutComments from "./WorkoutComments.svelte";
     let {workoutsData, onUpdateWorkout = null, canUpdate = true} = $props();
 
-    let commentType = $state(null);
+    let formType = $state(null); // anvend til comment form (onClose())
 
     function updateWorkout(){
         if (canUpdate) {
@@ -36,8 +37,10 @@
                 <p>No exercises registered</p>
             {/if}
         </div>
+        
+        <WorkoutComments workoutID={workout.id}/> <!--Not shown yet-->
 
-        <WorkoutComments workoutID={workout.id}/>
+        <CommentForm workoutID={workout.id}></CommentForm>
 
         {/each}
     </div>
