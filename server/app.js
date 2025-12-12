@@ -90,6 +90,9 @@ app.use("/api", prRouter);
 import workoutRouter from "./routers/workoutRouter.js";
 app.use("/api", workoutRouter);
 
+import commentsRouter from "./routers/commentsRouter.js"
+app.use("/api", commentsRouter); 
+
 const PORT = 8080 || Number(process.env.PORT);
 server.listen(PORT, () => {
     console.log('Server running on port', PORT)

@@ -8,12 +8,8 @@ declare module 'socket.io-client' {
 
 declare module 'svelte-routing' {
     export const Link: any;
-    
     export const Router: any;
-    
     export const Route: any;
-    
     export const navigate: any;
-
     export const route: any;
 }

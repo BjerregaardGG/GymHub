@@ -1,7 +1,7 @@
 <script>
     import toastr from 'toastr';
     import io from 'socket.io-client';
-    
+
     import { onMount } from 'svelte';
     import { getFetch } from "../util/fetchUtil.js";
 
@@ -16,9 +16,10 @@
     
     let userTrainingData = $state({});
     let workoutsData = $state([]); 
-    let profileData = $state({ name: '', image_path: '' });
+    let profileData = $state({ id: null, name: '', image_path: '' });
     let friends = $state([]);
     let formType = $state(null);
+    let currentUserID = $state(null);
     let socket; 
 
     // socket connection
@@ -83,6 +84,7 @@
 
         if (result && result.success) {
             profileData = result.data; 
+            currentUserID = profileData.id; 
         } else {
             toastr.error("Could not load profile data");
         }
@@ -104,7 +106,7 @@
             </div>
             <div class="right-column">
                 <FriendList {friends}></FriendList>
-                <SearchBar {friends}></SearchBar>
+                <SearchBar {friends} {currentUserID}></SearchBar>
             </div>
         </div> 
         <div class="workouts-section full-width">

@@ -17,7 +17,7 @@ router.get("/users/profile", isAuthorized, async (req, res) => {
         return res.status(401).send({ success: false, message: "Not authorized. You need to login"})
     }
 
-    const users = await db.all(`SELECT name, image_path FROM users WHERE id = ?;`, userId);
+    const users = await db.all(`SELECT id, name, image_path FROM users WHERE id = ?;`, userId);
 
     const userData = users[0];
 
@@ -51,7 +51,7 @@ router.get("/users/prdata", isAuthorized, async (req, res) => {
         FROM 
             pr_data 
         WHERE 
-            id = ?
+            user_id = ?
     `;
 
     let userTrainingData; 
@@ -66,10 +66,6 @@ router.get("/users/prdata", isAuthorized, async (req, res) => {
     const userData = userTrainingData[0]; 
 
     if (!userData) {
-        return res.status(404).send({ success: false, message: "User not found" });
-    }
-
-    if (userData.bench_press_kg === null && userData.squat_kg === null) {
         return res.send({ data: {}, success: true, message: "User found, but no training data to show" });
     };
 
@@ -90,7 +86,7 @@ router.get("/users/prdata/:userId", isAuthorized, async (req, res) => {
         FROM 
             pr_data 
         WHERE 
-            id = ?
+            user_id = ?
     `;
 
     let userTrainingData; 
@@ -105,10 +101,6 @@ router.get("/users/prdata/:userId", isAuthorized, async (req, res) => {
     const userData = userTrainingData[0]; 
 
     if (!userData) {
-        return res.status(404).send({ success: false, message: "User not found" });
-    }
-
-    if (userData.bench_press_kg === null && userData.squat_kg === null) {
         return res.send({ data: {}, success: true, message: "User found, but no training data to show" });
     };
 

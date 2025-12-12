@@ -1,6 +1,8 @@
 <script>
-
+    import WorkoutComments from "./WorkoutComments.svelte";
     let {workoutsData, onUpdateWorkout = null, canUpdate = true} = $props();
+
+    let commentType = $state(null);
 
     function updateWorkout(){
         if (canUpdate) {
@@ -34,6 +36,9 @@
                 <p>No exercises registered</p>
             {/if}
         </div>
+
+        <WorkoutComments workoutID={workout.id}/>
+
         {/each}
     </div>
 {:else}

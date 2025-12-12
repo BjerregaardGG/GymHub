@@ -4,7 +4,7 @@
     import toastr from 'toastr';
     import { Link } from "svelte-routing";
 
-    let { friends } = $props();
+    let { friends, currentUserID } = $props();
     let username = $state("");
     let users = $state([]);
 
@@ -27,7 +27,8 @@
 
     // makes sure that we update filteredUsers when the data changes
     let filteredUsers = $derived(users.filter(user => 
-        user.name.toLowerCase().includes(username.toLowerCase())
+        user.name.toLowerCase().includes(username.toLowerCase()) 
+        && user.id !== currentUserID
     ));
 
 
@@ -65,123 +66,115 @@
 </div>
 
 <style>
-    .user-search {
-        position: relative;
-        width: 300px;
-        margin: 0 auto;
-        margin-top: 20px; /* Tilføjer lidt luft */
-    }
+.user-search {
+    position: relative;
+    width: 300px;
+    margin: 0 auto;
+    margin-top: 20px; 
+    margin-left: 22px;
+}
 
-    .search-input {
-        width: 100%;
-        padding: 10px;
-        font-size: 1em;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-    }
+.search-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
 
+.search-results {
+    position: absolute;
+    width: 100%;
+    max-height: 250px;
+    overflow-y: auto;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    z-index: 10;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.no-results {
+    padding: 10px;
+    color: #888;
+    font-style: italic;
+}
+
+.search-results li {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    border-bottom: 1px solid #eee;
+    transition: background-color 0.2s;
+}
+
+.search-results li:hover {
+    background-color: #f6f6f6;
+}
+
+:global(.friend-link) {
+    text-decoration: none;
+    color: #333;
+}
+
+.friend-name-text, .not-friend {
+    flex-grow: 0;
+    margin: 0;
+}
+
+.not-friend {
+    cursor: default;
+}
+
+:global(.friend-link):hover .friend-name-text {
+    color: #007bff;
+    text-decoration: none; 
+    cursor: pointer;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    flex-shrink: 0; 
+    line-height: 1.2; 
+    font-size: 0.9em;
+    margin-left: auto;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+@media (prefers-color-scheme: dark) {
     .search-results {
-        position: absolute;
-        width: 100%;
-        max-height: 250px; /* Giver mere plads til resultater */
-        overflow-y: auto;
-        background: #fff;
-        border: 1px solid #ccc;
-        border-top: none;
-        border-radius: 0 0 6px 6px;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        z-index: 10;
-        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        background: #2a2a2a;
+        border-color: #444;
     }
-    
-    .no-results {
-        padding: 10px;
-        color: #888;
-        font-style: italic;
-    }
-
     .search-results li {
-        display: flex; /* Gør listeelementet til en flex-container */
-        justify-content: space-between; /* Fordel indholdet */
-        align-items: center;
-        padding: 8px 12px;
-        border-bottom: 1px solid #eee;
-        transition: background-color 0.2s;
+        color: #ddd;
+        border-bottom-color: #333;
     }
-
     .search-results li:hover {
-        background-color: #f6f6f6;
+        background-color: #383838;
     }
-
-    :global(.friend-link) {
-        /* Gælder når brugeren er ven (indeholder kun P-tag) */
-        text-decoration: none;
-        color: #333;
-        flex-grow: 1; /* Tvinger linket til at tage al resterende plads */
-        margin-right: 10px; /* Afstand til højre for linket */
+    :global(.friend-link), .friend-name-text {
+        color: #ddd;
     }
-    
-    /* Gælder for alle navne tekster, både klikbare (venner) og ikke-klikbare (ikke-venner) */
-    .friend-name-text {
-        margin: 0;
-        font-weight: 500;
-        /* Flex-grow er ikke nødvendig her, da linket/p-taggen allerede gør det */
-    }
-
-    /* NYT: Sørger for, at navnet (P-taggen) for IKKE-venner ikke ligner et link */
-    .not-friend {
-        flex-grow: 1; /* Udfyld pladsen ved siden af knappen */
-        cursor: default; /* Fjern pegefinger-markøren */
-        margin-right: 10px; /* Afstand til knappen */
-    }
-    
     :global(.friend-link):hover .friend-name-text {
-         /* Visuel indikation af, at navnet er klikbart (kun for venner) */
-        color: #007bff;
-        text-decoration: none; 
-        cursor: pointer;
+        color: #72baff;
     }
+}
 
-    button {
-        background-color: #4CAF50;
-        color: white;
-        border: none;
-        padding: 6px 12px;
-        border-radius: 4px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.2s;
-        flex-shrink: 0; /* Sikrer at knappen ikke bliver klemt */
-        /* NYT: Justering for at undgå at knappen fylder for meget */
-        line-height: 1.2; 
-        font-size: 0.9em;
-    }
 
-    button:hover {
-        background-color: #45a049;
-    }
-    
-    /* Dark Mode (Eksempel) */
-    @media (prefers-color-scheme: dark) {
-        .search-results {
-            background: #2a2a2a;
-            border-color: #444;
-        }
-        .search-results li {
-            color: #ddd;
-            border-bottom-color: #333;
-        }
-        .search-results li:hover {
-            background-color: #383838;
-        }
-        :global(.friend-link), .friend-name-text {
-            color: #ccc;
-        }
-        :global(.friend-link):hover .friend-name-text {
-            color: #72baff;
-        }
-    }
 </style>
