@@ -16,12 +16,12 @@
         const result = await postFetch("/auth/login", user);
         console.log(result);
 
-        if (result.success) {
-            loggedIn = true; 
+        if (!result) {
+            toastr.error("Could not login");
         } else {
-            toastr.error(result.message);
+            loggedIn = true;
         }
-    }
+    };
 
     async function handleNewUser() {
 
@@ -38,26 +38,25 @@
         const result = await postFetch("/auth/createuser", newUser);
         console.log(result);
 
-        if (result.success) {
+        if (!result) {
+            toastr.error("Could not create a new user"); 
+        } else {
             toastr.success("You successfully created a new user. Please sign in.")
             mode = "login";
             email = "";
             password = "";
-        } else {
-            toastr.error(result.message); 
         }
-    }
+    };
 
     async function handleForgotuser() {
         const result = await postFetch("/auth/forgotpassword", {email}); 
-        console.log(result); 
 
-        if (result.success) {
-            toastr.success('Check your e-mail');
+        if (!result) {
+            toastr.error("Could not configure the new user information");
         } else {
-            toastr.error(result.message); 
+            toastr.success('Check your e-mail');
         }
-    }
+    };
  
 </script>
 

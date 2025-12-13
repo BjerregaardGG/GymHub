@@ -38,8 +38,7 @@
             {/if}
         </div>
         
-        <WorkoutComments workoutID={workout.id}/> <!--Not shown yet-->
-
+        <WorkoutComments workoutID={workout.id}/> 
         <CommentForm workoutID={workout.id}></CommentForm>
 
         {/each}

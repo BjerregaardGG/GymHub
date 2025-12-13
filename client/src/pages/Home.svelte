@@ -49,11 +49,11 @@
     async function loadPRData(){
         const result = await getFetch("/api/users/prdata");
 
-        if (result && result.success) {
+        if (!result) {
+            toastr.error("Could not load training data");
+        } else {
             userTrainingData = result.data; 
             console.log($state.snapshot(userTrainingData));
-        } else {
-            toastr.error("Could not load training data");
         }
     }; 
 
@@ -82,11 +82,11 @@
     async function loadProfile(){
         const result = await getFetch("/api/users/profile");
 
-        if (result && result.success) {
+        if (!result) {
+            toastr.error("Could not load profile data");
+        } else {
             profileData = result.data; 
             currentUserID = profileData.id; 
-        } else {
-            toastr.error("Could not load profile data");
         }
     };
 

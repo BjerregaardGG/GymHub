@@ -37,7 +37,9 @@
         const result = await postFetch("/auth/resetpassword", tokenAndPassword);
         console.log(result);
 
-        if (result.success) {
+        if (!result) {
+            toastr.error("Could not reset password");
+        } else {
             toastr.success(result.message);
             newPassword = "";
             confirmPassword = "";
@@ -46,11 +48,8 @@
             setTimeout(() => {
                 navigate("/");
             }, 3000);
-
-        } else {
-            toastr.error(result.message);
         }
-    }
+    };
  
 </script>
 

@@ -19,7 +19,7 @@
         }
     }; 
 
-    function addFriend(userId){
+    function followUser(userId){
 
     }
 
@@ -52,8 +52,8 @@
                         </Link>
                     {:else}
                         <p class="friend-name-text not-friend">{user.name}</p>
-                        <button onclick={() => addFriend(user.id)} title="Send friend request">
-                            Add Friend
+                        <button onclick={() => followUser(user.id)} title="Follow user">
+                            Follow
                         </button>
                     {/if}
                 </li>

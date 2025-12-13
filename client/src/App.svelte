@@ -16,13 +16,13 @@
     e.preventDefault();
     const result = await postFetch("/auth/signout"); 
 
-    if (result.success) {
+    if (!result) {
+      toastr.error("Could not sign out. Something went wrong.")
+    } else {
       loggedIn = false; 
       toastr.info(result.message);
       navigate("/", {replace: true});
-    } else {
-      toastr.error(result.message)
-    } 
+    }
   };
   
 </script>

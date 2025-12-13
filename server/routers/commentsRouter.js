@@ -38,7 +38,7 @@ router.post("/comments", isAuthorized, async(req, res) => {
         `
         await db.run(postCommentQuery, workout_id, userId, comment);
         
-        return res.send({ success: true, message: "Workout created" });
+        return res.send({ success: true, message: "Comment added" });
 
     } catch (error) {
         console.error(error);

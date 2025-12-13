@@ -5,7 +5,7 @@
 </script>
 
 <div class="friend-list">
-    <h3>Friends</h3>
+    <h3>Users you follow</h3>
     <ul class="friend-list-ul"> 
         {#each friends as friend }
             <li class="friend-item">

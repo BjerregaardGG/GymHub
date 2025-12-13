@@ -1,8 +1,10 @@
 <script>
-    import { onMount } from "svelte";
     import { getFetch } from "../../util/fetchUtil.js";
+    import { commentsUpdated } from "../../stores/commentStore.js";
     import toastr from "toastr";
+
     let {workoutID} = $props(); // catch workoutId
+    
     let comments = $state([])
 
     async function getComments() {
@@ -16,7 +18,11 @@
         }
     };
 
-    onMount(getComments);
+    // Runs at mount and everytime store changes
+    $effect(() => {
+        const updateTrigger = $commentsUpdated; // reaactive trigger --> getComments() is called
+        getComments(); 
+    });
 
 </script>
 
