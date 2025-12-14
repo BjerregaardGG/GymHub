@@ -1,23 +1,23 @@
 <script>
     import { Link } from "svelte-routing"
-    let { friends } = $props();
+    let { following } = $props();
 
 </script>
 
 <div class="friend-list">
     <h3>Users you follow</h3>
     <ul class="friend-list-ul"> 
-        {#each friends as friend }
+        {#each following as user }
             <li class="friend-item">
-                <Link to={`/profile/${friend.id}`} class="friend-link" title={`Go to ${friend.name}'s profile`}>
-                    <p class="friend-name-text">{friend.name}</p>
+                <Link to={`/profile/${user.id}`} class="friend-link" title={`Go to ${user.name}'s profile`}>
+                    <p class="friend-name-text">{user.name}</p>
                 </Link>
                 <img 
-                    src={`${import.meta.env.VITE_BASE_URL}${friend.image_path}`} 
-                    alt={`Profile picture for ${friend.name}`} 
+                    src={`${import.meta.env.VITE_BASE_URL}${user.image_path}`} 
+                    alt={`Profile picture for ${user.name}`} 
                     id="profile-pic-small"
-                    class:online={friend.isOnline}
-                    title={friend.isOnline ? 'Online' : 'Offline'}
+                    class:online={user.isOnline}
+                    title={user.isOnline ? 'Online' : 'Offline'}
                 />
             </li>
         {/each}

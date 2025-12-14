@@ -37,7 +37,7 @@
                 <p>No exercises registered</p>
             {/if}
         </div>
-        
+    
         <WorkoutComments workoutID={workout.id}/> 
         <CommentForm workoutID={workout.id}></CommentForm>
 
@@ -52,25 +52,28 @@
 {/if}
 
 <style>
+    h2 {
+        margin-left: 27px;
+        font-size: 2.2em;
+        line-height: 1.1;
+    }
+
     .workouts-list {
         display: flex;
-        flex-direction: row; 
-        flex-wrap: wrap; 
-        gap: 15px;
-        max-width: 100%;
+        flex-direction: column; 
+        gap: 25px;
+        max-width: 700px;
         margin: 20px auto;
         padding: 0 10px;
-        justify-content: center; 
     }
 
     .workout-card {
-        width: 45%; 
+        width: 100%; 
         padding: 15px;
         border: 1px solid #ddd;
         border-radius: 10px;
         box-shadow: 0 2px 6px rgba(0,0,0,0.1);
         background-color: #fff;
-        transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .workout-card:hover {
@@ -117,13 +120,6 @@
         margin-bottom: 3px;
         font-size: 0.95em;
         line-height: 1;
-    }
-
-    @media (max-width: 700px) {
-        .workout-card {
-            width: 100%; 
-            min-width: unset;
-        }
     }
 
     @media (prefers-color-scheme: dark) {

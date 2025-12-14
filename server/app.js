@@ -81,8 +81,8 @@ app.use(authRouter);
 import userRouter from "./routers/userRouter.js";
 app.use("/api", userRouter);
 
-import friendsRouter from "./routers/friendsRouter.js"
-app.use("/api", friendsRouter({ onlineUsers })); // we send the onlineUsers object for the initial status
+import relationsRouter from "./routers/relationsRouter.js"
+app.use("/api/relations", relationsRouter({ onlineUsers })); // we send the onlineUsers object for the initial status
 
 import prRouter from "./routers/prRouter.js";
 app.use("/api", prRouter);

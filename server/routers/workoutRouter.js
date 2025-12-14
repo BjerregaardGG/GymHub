@@ -1,5 +1,6 @@
 import {Router} from 'express';
 import { isAuthorized } from '../middleware/authMiddleware.js';
+import { canViewContent } from '../middleware/privacyMiddleware.js';
 import db from "../database/connection.js";
 const router = Router();
 
@@ -36,7 +37,7 @@ router.get("/workouts", isAuthorized, async (req, res) => {
 });
 
 // collects the workouts a specific user
-router.get("/workouts/:id", isAuthorized, async (req, res) => {
+router.get("/workouts/:id", isAuthorized, canViewContent, async (req, res) => {
     const userId = req.params.id;
 
     if (!userId) {

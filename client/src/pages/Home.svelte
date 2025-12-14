@@ -17,7 +17,7 @@
     let userTrainingData = $state({});
     let workoutsData = $state([]); 
     let profileData = $state({ id: null, name: '', image_path: '' });
-    let friends = $state([]);
+    let following = $state([]);
     let formType = $state(null);
     let currentUserID = $state(null);
     let socket; 
@@ -31,11 +31,11 @@
         socket.on('friend-status-update', (data) => {
             const { userId, isOnline } = data; // collects userId and online status from data
 
-            friends = friends.map(friend => {
-                if (friend.id == userId) { 
-                    return { ...friend, isOnline: isOnline };
+            following = following.map(user => {
+                if (user.id == userId) { 
+                    return { ...user, isOnline: isOnline };
                 }
-                return friend;
+                return user;
             });
         });
 
@@ -58,13 +58,13 @@
     }; 
 
     async function loadFriends(){
-        const result = await getFetch("/api/friends"); 
+        const result = await getFetch("/api/relations/following"); 
 
         if (!result) {
             toastr.error("Could not load friends"); 
         } else {
-            friends = result.data; 
-            console.log($state.snapshot(friends));
+            following = result.data; 
+            console.log($state.snapshot(following));
         }
     };
 
@@ -105,8 +105,8 @@
                 <PRList {userTrainingData} onUpdatePr={() => formType = "pr"} canUpdate={true} ></PRList>
             </div>
             <div class="right-column">
-                <FriendList {friends}></FriendList>
-                <SearchBar {friends} {currentUserID}></SearchBar>
+                <FriendList {following}></FriendList>
+                <SearchBar {following} {currentUserID}></SearchBar>
             </div>
         </div> 
         <div class="workouts-section full-width">

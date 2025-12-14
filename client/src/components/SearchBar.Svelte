@@ -1,10 +1,10 @@
 <script>
     import { onMount } from "svelte";
-    import { getFetch } from "../util/fetchUtil.js"; 
+    import { getFetch, postFetch } from "../util/fetchUtil.js"; 
     import toastr from 'toastr';
     import { Link } from "svelte-routing";
 
-    let { friends, currentUserID } = $props();
+    let { following, currentUserID } = $props();
     let username = $state("");
     let users = $state([]);
 
@@ -19,8 +19,15 @@
         }
     }; 
 
-    function followUser(userId){
+    async function followUser(userId){
 
+        const result = await postFetch(`/api/relations/follow/${userId}`);
+
+        if (!result) {
+            toastr.error("Could not follow user");
+        } else {
+            toastr.success(result.message);
+        }
     }
 
     onMount(loadUsers); 
@@ -37,7 +44,7 @@
 <div class="user-search">
     <input
         type="text"
-        placeholder="Search for users" bind:value={username}
+        placeholder="Search for users 🔎" bind:value={username}
         class="search-input"
     />
 
@@ -46,7 +53,7 @@
             {#if filteredUsers.length > 0}
                 {#each filteredUsers as user}
                 <li>   
-                    {#if friends.some(friend => friend.id == user.id)}
+                    {#if following.some(following => following.id == user.id)}
                         <Link to={`/profile/${user.id}`} class="friend-link" title={`Go to ${user.name}'s profile`}>
                             <p class="friend-name-text">{user.name}</p>
                         </Link>

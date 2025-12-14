@@ -1,5 +1,6 @@
 import {Router} from 'express';
-import { isAuthorized, isAdmin } from '../middleware/authMiddleware.js';
+import { isAuthorized } from '../middleware/authMiddleware.js';
+import { canViewContent } from '../middleware/privacyMiddleware.js';
 import db from "../database/connection.js";
 const router = Router();
 
@@ -73,7 +74,7 @@ router.get("/users/prdata", isAuthorized, async (req, res) => {
 }); 
 
 
-router.get("/users/prdata/:userId", isAuthorized, async (req, res) => { 
+router.get("/users/prdata/:userId", isAuthorized, canViewContent, async (req, res) => { 
     const userId = req.params.userId;
 
     if (!userId) {

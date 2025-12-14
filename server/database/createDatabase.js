@@ -19,16 +19,19 @@ CREATE TABLE IF NOT EXISTS users (
     email TEXT UNIQUE,
     password TEXT,
     image_path TEXT,
-    role TEXT CHECK(role IN ('ADMIN', 'TRAINER', 'USER'))
+    is_private INTEGER NOT NULL DEFAULT 0, 
+    role TEXT CHECK(role IN ('ADMIN', 'USER')) DEFAULT 'USER'
 );
 
-CREATE TABLE IF NOT EXISTS user_relationships (
+CREATE TABLE IF NOT EXISTS follow_requests (
      id INTEGER PRIMARY KEY AUTOINCREMENT, 
-     user1_id INTEGER NOT NULL, 
-     user2_id INTEGER NOT NULL,  
-     FOREIGN KEY (user1_id) REFERENCES users(id),
-     FOREIGN KEY (user2_id) REFERENCES users(id),
-     UNIQUE (user1_id, user2_id)
+     sender_id INTEGER NOT NULL, 
+     reciever_id INTEGER NOT NULL,  
+     status TEXT NOT NULL CHECK(status IN ('PENDING', 'ACCEPTED', 'DECLINED')),
+     date_sent TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+     FOREIGN KEY (sender_id) REFERENCES users(id),
+     FOREIGN KEY (reciever_id) REFERENCES users(id),
+     UNIQUE (sender_id, reciever_id)
 );
 
 CREATE TABLE IF NOT EXISTS pr_data (
@@ -75,32 +78,32 @@ CREATE TABLE IF NOT EXISTS comments (
 
 
 if (deleteMode) {
-    db.run(`INSERT INTO users (id, name, email, password, image_path, role) VALUES (1, 'Ole', 'ole@hotmail.dk',
-         '$2b$14$qnv9DIMDRErunkw72ZyfuODc./adnNdzyzdNlSCqVv31GfdMZdJZu', '/uploads/ole_image.jpg', 'ADMIN')`); // 1234x
-    db.run(`INSERT INTO users (id, name, email, password, image_path, role) VALUES (2, 'Nanna', 'nanna@hotmail.dk',
-         '$2b$14$vkrt4LlZ0P/JihmaDkAuFukK9C8ODszphqlUjD2y1dic/x3jAmbty', '/uploads/nanna_image.jpg', 'USER')`); // 4444kl
-    db.run(`INSERT INTO users (id, name, email, password, image_path, role) VALUES (3, 'Thomas', 'thomas@gmail.com',
-         '$2b$14$AMBDYttPuznUnZ4biOqV8eUQCxhkXw8F.8QB5n91Ho6PUfGFeWroK', '/uploads/thomas_image.jpg', 'USER')`); // 8765ff
-    db.run(`INSERT INTO users (id, name, email, password, image_path, role) VALUES (4, 'Phillip', 'phillip@gmail.com',
-         '$2b$14$8KOIN.ZsiKUVDxnRolNCYeh7nmAHp3NzQnRNadhCZhq.fltxBgpAy', '/uploads/phillip_image.jpg', 'USER')`); // password
-    db.run(`INSERT INTO users (id, name, email, password, image_path, role) VALUES (5, 'Olivia', 'olivia@gmail.com',
-         '$2b$14$IU5LDgyyivGhKO0sX5Z2/.BR9.CdoJmyVgIHKotl3jvIiD7eiM1Nq', '/uploads/olivia_image.jpg', 'ADMIN')`); // youwillneverguess
+    db.run(`INSERT INTO users (id, name, email, password, image_path, is_private, role) VALUES (1, 'Ole', 'ole@hotmail.dk',
+         '$2b$14$qnv9DIMDRErunkw72ZyfuODc./adnNdzyzdNlSCqVv31GfdMZdJZu', '/uploads/ole_image.jpg', 0, 'ADMIN')`); // 1234x
+    db.run(`INSERT INTO users (id, name, email, password, image_path, is_private, role) VALUES (2, 'Nanna', 'nanna@hotmail.dk',
+         '$2b$14$vkrt4LlZ0P/JihmaDkAuFukK9C8ODszphqlUjD2y1dic/x3jAmbty', '/uploads/nanna_image.jpg', 0, 'USER')`); // 4444kl
+    db.run(`INSERT INTO users (id, name, email, password, image_path, is_private, role) VALUES (3, 'Thomas', 'thomas@gmail.com',
+         '$2b$14$AMBDYttPuznUnZ4biOqV8eUQCxhkXw8F.8QB5n91Ho6PUfGFeWroK', '/uploads/thomas_image.jpg', 0, 'USER')`); // 8765ff
+    db.run(`INSERT INTO users (id, name, email, password, image_path, is_private, role) VALUES (4, 'Phillip', 'phillip@gmail.com',
+         '$2b$14$8KOIN.ZsiKUVDxnRolNCYeh7nmAHp3NzQnRNadhCZhq.fltxBgpAy', '/uploads/phillip_image.jpg', 0, 'USER')`); // password
+    db.run(`INSERT INTO users (id, name, email, password, image_path, is_private, role) VALUES (5, 'Olivia', 'olivia@gmail.com',
+         '$2b$14$IU5LDgyyivGhKO0sX5Z2/.BR9.CdoJmyVgIHKotl3jvIiD7eiM1Nq', '/uploads/olivia_image.jpg', 0, 'ADMIN')`); // youwillneverguess
 
-     // Nanna (2) and Thomas (3) are friends
-     db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
-          (2, 3)`);
+     // Nanna (2) is following Thomas (3)
+     db.run(`INSERT INTO follow_requests (sender_id, reciever_id, status) VALUES 
+          (2, 3, 'ACCEPTED')`);
 
-     db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
-          (2, 1)`);
+     db.run(`INSERT INTO follow_requests (sender_id, reciever_id, status) VALUES 
+          (2, 1, 'ACCEPTED')`);
      
-     db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
-          (2, 4)`);
+     db.run(`INSERT INTO follow_requests (sender_id, reciever_id, status) VALUES 
+          (2, 4, 'ACCEPTED')`);
      
-     db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
-          (2, 5)`);
+     db.run(`INSERT INTO follow_requests (sender_id, reciever_id, status) VALUES 
+          (2, 5, 'ACCEPTED')`);
 
-     db.run(`INSERT INTO user_relationships (user1_id, user2_id) VALUES 
-          (4, 1)`);
+     db.run(`INSERT INTO follow_requests (sender_id, reciever_id, status) VALUES 
+          (4, 1, 'ACCEPTED')`);
 
      // PR Data
      // Nanna's PR
