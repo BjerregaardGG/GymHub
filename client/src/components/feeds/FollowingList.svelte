@@ -5,7 +5,7 @@
 </script>
 
 <div class="friend-list">
-    <h3>Users you follow</h3>
+    <h3>Following</h3>
     <ul class="friend-list-ul"> 
         {#each following as user }
             <li class="friend-item">
@@ -26,7 +26,8 @@
 
 <style>
     .friend-list {
-        max-width: 100%;
+        width: 35%;
+        max-width: 40%;
         margin-top: 160px;
         padding: 25px;
         border: 1px solid #ddd;
@@ -64,8 +65,8 @@
     }
     
     #profile-pic-small {
-        width: 40px; 
-        height: 40px; 
+        width: 30px; 
+        height: 30px; 
         object-fit: cover; 
         border-radius: 50%; 
         border: 2px solid #D32F2F; /* Lidt dyb rød for offline */

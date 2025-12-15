@@ -1,5 +1,6 @@
 import {Router} from "express"
 import { isAuthorized} from '../middleware/authMiddleware.js';
+
 import db from "../database/connection.js";
 
 export default ({ onlineUsers }) => {
@@ -59,6 +60,33 @@ export default ({ onlineUsers }) => {
         res.send({ data: followersWithStatus, success: true, message: "Successfully fetched followers" });
     });
 
+    // if private - we check for requests 
+    router.get("/requests", isAuthorized, async (req, res) => {
+        const userId = req.session.user.id; 
+        console.log("Requests for", userId);
+
+        const followRequests = await db.all(`
+            SELECT 
+            u.id, 
+            u.name, 
+            u.image_path
+            FROM users u
+            INNER JOIN follow_requests fr
+            ON fr.sender_id = u.id
+            WHERE fr.reciever_id = ? AND fr.status = 'PENDING'`, 
+            userId
+        );
+
+        if (followRequests.length === 0) {
+            return res.send({ data: [], success: true, message: "No incoming follow requests"});
+        }
+
+        console.log("Follow requests:", followRequests);
+
+        res.send({ data: followRequests, success: true, message: "Successfully fetched requests" });
+
+    });
+
     router.post("/follow/:id", isAuthorized, async (req, res ) => {
         const senderId = req.session.user.id;
         const recieverId = parseInt(req.params.id); 
@@ -116,6 +144,14 @@ export default ({ onlineUsers }) => {
             res.status(500).send({ success: false, message: "Could not process follow request due to server error." });
         }
     });
+
+    router.patch("/requests/accept/:id", isAuthorized, async (req, res) => {
+
+    })
+
+    router.patch("/requests/decline/:id", isAuthorized, async (req, res) => {
+
+    })
     
     return router;
 }

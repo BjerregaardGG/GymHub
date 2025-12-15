@@ -1,5 +1,6 @@
 import db from "../database/connection.js";
 
+// We can access data if we follow or they are public 
 async function checkAccess(userId, contentUserId) {
     
     if (userId === contentUserId) {
@@ -30,7 +31,7 @@ async function checkAccess(userId, contentUserId) {
         return { authorized: true };
     }
 
-    return { authorized: false, status: 403, message: "You must be a follower to view this page." };
+    return { authorized: false, status: 403, message: "You must be a follower to view this data." };
 }; 
 
 export async function canViewContent(req, res, next) {

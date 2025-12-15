@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import { isAuthorized } from '../middleware/authMiddleware.js';
 import { canViewContent } from '../middleware/privacyMiddleware.js';
 import db from "../database/connection.js";

@@ -8,7 +8,7 @@ if (deleteMode) {
     db.exec(`DROP TABLE IF EXISTS workouts`);
     db.exec(`DROP TABLE IF EXISTS workout_exercises`);
     db.exec(`DROP TABLE IF EXISTS comments`);
-    db.exec(`DROP TABLE IF EXISTS user_relationships`);
+    db.exec(`DROP TABLE IF EXISTS follow_requests`);
 }
 
 // DDL
@@ -87,7 +87,7 @@ if (deleteMode) {
     db.run(`INSERT INTO users (id, name, email, password, image_path, is_private, role) VALUES (4, 'Phillip', 'phillip@gmail.com',
          '$2b$14$8KOIN.ZsiKUVDxnRolNCYeh7nmAHp3NzQnRNadhCZhq.fltxBgpAy', '/uploads/phillip_image.jpg', 0, 'USER')`); // password
     db.run(`INSERT INTO users (id, name, email, password, image_path, is_private, role) VALUES (5, 'Olivia', 'olivia@gmail.com',
-         '$2b$14$IU5LDgyyivGhKO0sX5Z2/.BR9.CdoJmyVgIHKotl3jvIiD7eiM1Nq', '/uploads/olivia_image.jpg', 0, 'ADMIN')`); // youwillneverguess
+         '$2b$14$IU5LDgyyivGhKO0sX5Z2/.BR9.CdoJmyVgIHKotl3jvIiD7eiM1Nq', '/uploads/olivia_image.jpg', 1, 'ADMIN')`); // youwillneverguess
 
      // Nanna (2) is following Thomas (3)
      db.run(`INSERT INTO follow_requests (sender_id, reciever_id, status) VALUES 
@@ -115,6 +115,9 @@ if (deleteMode) {
      // Phillip's PR
      db.run(`INSERT INTO pr_data (user_id, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max)
           VALUES (4, 75.0, 110.0, 140.0, 35.1, 10)`);
+     
+     db.run(`INSERT INTO pr_data (user_id, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max)
+          VALUES (5, 75.0, 110.0, 140.0, 35.1, 10)`);
 
      // Workouts
      db.run(`INSERT INTO workouts (user_id, title, description) VALUES 

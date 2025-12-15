@@ -9,15 +9,19 @@
     import WorkoutForm from '../components/forms/WorkoutForm.svelte';
     import SearchBar from '../components/SearchBar.svelte'
 
-    import FriendList from '../components/feeds/FriendList.svelte';
+    import FollowingList from '../components/feeds/FollowingList.svelte';
+    import FollowerList from '../components/feeds/FollowerList.svelte';
     import PRList from '../components/feeds/PRList.svelte';
     import WorkoutList from '../components/feeds/WorkoutList.svelte';
     import ProfileFeed from '../components/feeds/ProfileFeed.svelte';
+    import FollowRequests from '../components/feeds/FollowRequests.svelte';
     
     let userTrainingData = $state({});
     let workoutsData = $state([]); 
     let profileData = $state({ id: null, name: '', image_path: '' });
     let following = $state([]);
+    let followers = $state([]);
+    let followRequests = $state([]);
     let formType = $state(null);
     let currentUserID = $state(null);
     let socket; 
@@ -57,14 +61,24 @@
         }
     }; 
 
-    async function loadFriends(){
+    async function loadFollowing(){
         const result = await getFetch("/api/relations/following"); 
 
         if (!result) {
-            toastr.error("Could not load friends"); 
+            toastr.error("Could not load users you follow"); 
         } else {
             following = result.data; 
             console.log($state.snapshot(following));
+        }
+    };
+
+    async function loadFollowers(){
+        const result = await getFetch("/api/relations/followers"); 
+
+        if (!result) {
+            toastr.error("Could not load followers"); 
+        } else {
+            followers = result.data; 
         }
     };
 
@@ -90,8 +104,21 @@
         }
     };
 
+    async function loadFollowRequests(){
+        const result = await getFetch("/api/relations/requests"); 
+
+        if (!result) {
+            toastr.error("Could not load requests");
+        } else {
+            followRequests = result.data; 
+            console.log("Requests:", $state.snapshot(followRequests));
+        }
+    }
+
     onMount(loadProfile);
-    onMount(loadFriends);
+    onMount(loadFollowing);
+    onMount(loadFollowers); 
+    onMount(loadFollowRequests); 
     onMount(loadPRData);
     onMount(loadWorkouts);
    
@@ -105,8 +132,14 @@
                 <PRList {userTrainingData} onUpdatePr={() => formType = "pr"} canUpdate={true} ></PRList>
             </div>
             <div class="right-column">
-                <FriendList {following}></FriendList>
-                <SearchBar {following} {currentUserID}></SearchBar>
+                <div class="lists-container"> 
+                    <FollowingList {following}></FollowingList>
+                    <FollowerList {followers}></FollowerList>
+                </div>
+                <SearchBar {following} {currentUserID} {loadFollowing}></SearchBar>
+                {#if followRequests.length > 0}
+                    <FollowRequests {followRequests}></FollowRequests>
+                {/if}
             </div>
         </div> 
         <div class="workouts-section full-width">
@@ -132,7 +165,7 @@
         display: flex;
         gap: 10px;
         padding: 20px;
-        max-width: 1100px; 
+        max-width: 100%; 
         margin: 0 auto;
     }
 
@@ -144,7 +177,15 @@
 
     .right-column {
         flex: 1; 
+        display: flex; 
+        flex-direction: column; 
         min-width: 250px; 
+    }
+
+    .lists-container {
+        display: flex; /* Gør denne container til en flex container */
+        flex-wrap: wrap; /* Tillad ombrydning, hvis pladsen bliver for trang */
+        gap: 10px; 
     }
 
     .workouts-section.full-width {

@@ -13,32 +13,32 @@
     let workoutsData = $state([])
 
     async function loaddProfile(){
-        const result = await getFetch(`/api/users/profile/${id}`)
+        const result = await getFetch(`/api/users/profile/${id}`);
 
-        if (!result) {
-            toastr.error("Could not find user data. You might not have access to this user data.");
-        } else {
+        if (result && result.success) {
             profileData = result.data;  
+        } else {
+            toastr.error(result ? result.message : "Could not load profile. Network or access error.");
         }
     };
 
     async function loadPRData(){
         const result = await getFetch(`/api/users/prdata/${id}`);
 
-        if (!result) {
-            toastr.error("Could not find user data. You might not have access to this user data."); 
-        } else {
+        if (result && result.success) {
             userTrainingData = result.data;  
+        } else {
+            toastr.error(result ? result.message : "Could not load training data.");
         }
     };
 
     async function loadWorkouts(){
         const result = await getFetch(`/api/workouts/${id}`);
 
-        if (!result) {
-            toastr.error("Could not find workout data for user.")
-        } else {
+        if (result && result.success) {
             workoutsData = result.data; 
+        } else {
+            toastr.error(result ? result.message : "Could not load workout data.");
         }
     };
 
@@ -48,16 +48,20 @@
 
 </script>
 
-<div class="content-layout"> 
-    <div class="left-column"> 
-        <ProfileFeed {profileData} {userTrainingData} {workoutsData}></ProfileFeed>
-        <PRList {userTrainingData} canUpdate={false} ></PRList>
+{#if profileData}
+    <div class="content-layout"> 
+        <div class="left-column"> 
+            <ProfileFeed {profileData} {userTrainingData} {workoutsData}></ProfileFeed>
+            <PRList {userTrainingData} canUpdate={false} ></PRList>
+        </div>
+        <div class="workouts-section full-width">
+            <WorkoutList {workoutsData} canUpdate={false}></WorkoutList>
+        </div>
     </div>
-    <div class="workouts-section full-width">
-        <WorkoutList {workoutsData} canUpdate={false}></WorkoutList>
-    </div>
-</div>
 
+{:else}
+    <p>Loading or Error...</p> 
+{/if}
 
 
 

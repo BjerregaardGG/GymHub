@@ -31,7 +31,7 @@
 </script>
 
 <button class="toggle-comments-button" onclick={showComments}>
-    {commentsIsExpanded ? 'Hide' : 'View'} {comments.length} comments
+    {commentsIsExpanded ? `Hide ${comments.length} comments ⬆` : `View ${comments.length} comments ⬇`} 
 </button>
 
 {#if commentsIsExpanded }

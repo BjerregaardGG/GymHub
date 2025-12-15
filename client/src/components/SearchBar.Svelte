@@ -4,7 +4,7 @@
     import toastr from 'toastr';
     import { Link } from "svelte-routing";
 
-    let { following, currentUserID } = $props();
+    let { following, currentUserID, loadFollowing } = $props();
     let username = $state("");
     let users = $state([]);
 
@@ -27,6 +27,8 @@
             toastr.error("Could not follow user");
         } else {
             toastr.success(result.message);
+            await loadFollowing();
+            await loadUsers(); 
         }
     }
 
@@ -37,7 +39,6 @@
         user.name.toLowerCase().includes(username.toLowerCase()) 
         && user.id !== currentUserID
     ));
-
 
 </script>
 
@@ -75,10 +76,10 @@
 <style>
 .user-search {
     position: relative;
-    width: 300px;
+    width: 92%;
     margin: 0 auto;
     margin-top: 20px; 
-    margin-left: 22px;
+    margin-left: 2px;
 }
 
 .search-input {
