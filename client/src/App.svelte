@@ -1,16 +1,49 @@
 <script>
   import { Router, Link, Route, navigate } from "svelte-routing";
+  import { onMount } from "svelte";
+
   import Login from "./pages/Login.svelte";
   import Home from "./pages/Home.svelte";
   import Clients from "./pages/Clients.svelte";
   import Friend from "./pages/Friend.svelte";
   import ResetPassword from "./pages/ResetPassword.svelte";
   import WorkoutForm from "./components/forms/WorkoutForm.svelte";
-  import { postFetch } from "./util/fetchUtil";
+
+  import { postFetch, getFetch, patchFetch } from "./util/fetchUtil";
 
   import toastr from "toastr";
 
-  let loggedIn = false; 
+  let isPrivate = $state(false);
+  let loggedIn = $state(false); 
+  let loading = $state(true);
+
+  async function handlePrivateStatusToggle() {
+        const result = await patchFetch("/api/users/privatestatus"); 
+        
+        if (result && result.success) {
+            isPrivate = result.is_private; 
+            toastr.success(result.message);
+        } else {
+            toastr.error(result.message);
+        }
+    }
+
+  async function checkAuthentication(){
+    const result = await getFetch("/api/users/profile"); 
+
+    // if success -> we have a session
+    if (result && result.success) {
+        loggedIn = true; 
+        isPrivate = result.is_private;
+    } else {
+        loggedIn = false;
+        isPrivate = false;
+    }
+
+    loading = false; 
+  };
+
+  onMount(checkAuthentication);
 
   async function handleSignOut(e) {
     e.preventDefault();
@@ -21,6 +54,7 @@
     } else {
       loggedIn = false; 
       toastr.info(result.message);
+      loading = false;
       navigate("/", {replace: true});
     }
   };
@@ -28,25 +62,39 @@
 </script>
 
 <Router>
-  {#if loggedIn}
-  <nav class="nav-bar">
-    <div class="nav-container">
-        <div class="nav-left">
-            <Link to="/">Home</Link>
-            <Link to="/clients">Clients</Link>
-            <Link to="/postworkout">Post workout</Link>
-        </div>
-        
-        <div class="nav-title">
-            GYM HUB
-        </div>
+  {#if loading}
+    <div class="initial-loading">Checking login status</div>
 
-        <div class="nav-right">
+  {:else}
+    {#if loggedIn}
+    <nav class="nav-bar">
+      <div class="nav-container">
+          <div class="nav-left">
+              <Link to="/">Home</Link>
+              <Link to="/clients">Clients</Link>
+              <Link to="/postworkout">Post workout</Link>
+          </div>
+          
+          <div class="nav-title">
+              GYM HUB
+          </div>
+
+          <div class="nav-right">
             <a href="/" onclick={handleSignOut}>Sign out</a>
-        </div>
-    </div>
-  </nav>
-  {/if}
+            <button 
+                  class="private-toggle-btn" 
+                  onclick={handlePrivateStatusToggle} 
+                  aria-label="Change profilestatus to {isPrivate ? 'Public' : 'Private'}">
+                  {#if isPrivate}
+                      🔐 
+                  {:else}
+                      🔓 
+                  {/if}
+              </button>
+          </div>
+      </div>
+    </nav>
+    {/if}
 
   <div>
     <!-- Home -->
@@ -93,8 +141,8 @@
      <ResetPassword></ResetPassword>
      {/if}
     </Route>
-
   </div>
+  {/if}
 </Router>
 
 <footer class="footer">
@@ -104,6 +152,16 @@
 </footer>
 
 <style>
+
+  .initial-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.2rem;
+    color: #666;
+  }
+
   .nav-bar {
       position: fixed; 
       top: 0;
@@ -144,10 +202,29 @@
       margin-left: -45px;
   }
 
+  .private-toggle-btn {
+      background: none;
+      border: 1px solid #cccccc; 
+      color: #000000;
+      cursor: pointer;
+      font-size: 1em;
+      font-weight: 500;
+      padding: 5px 10px;
+      border-radius: 4px;
+      transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+  }
+
+  .private-toggle-btn:hover {
+      background-color: #f0f0f0; 
+      border-color: #5aa7ff; 
+      color: #000000;
+  }
+
   .nav-right {
       display: flex;
       align-items: center;
       justify-content: flex-end; 
+      gap: 20px;
   }
 
   .nav-right a { 

@@ -16,10 +16,11 @@
         const result = await postFetch("/auth/login", user);
         console.log(result);
 
-        if (!result) {
-            toastr.error("Could not login");
+        if (result && result.success) { 
+            toastr.success(result.message || "Login successful!");
+            loggedIn = true; 
         } else {
-            loggedIn = true;
+            toastr.error(result.message)
         }
     };
 
@@ -38,23 +39,23 @@
         const result = await postFetch("/auth/createuser", newUser);
         console.log(result);
 
-        if (!result) {
-            toastr.error("Could not create a new user"); 
-        } else {
+        if (result && result.success) {
             toastr.success("You successfully created a new user. Please sign in.")
             mode = "login";
             email = "";
             password = "";
+        } else {
+            toastr.error(result.message);
         }
     };
 
     async function handleForgotuser() {
         const result = await postFetch("/auth/forgotpassword", {email}); 
 
-        if (!result) {
-            toastr.error("Could not configure the new user information");
-        } else {
+        if (result && result.success) {
             toastr.success('Check your e-mail');
+        } else {
+            toastr.error(result.message);
         }
     };
  

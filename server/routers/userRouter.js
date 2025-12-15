@@ -18,7 +18,7 @@ router.get("/users/profile", isAuthorized, async (req, res) => {
         return res.status(401).send({ success: false, message: "Not authorized. You need to login"})
     }
 
-    const users = await db.all(`SELECT id, name, image_path FROM users WHERE id = ?;`, userId);
+    const users = await db.all(`SELECT id, name, image_path, is_private FROM users WHERE id = ?;`, userId);
 
     const userData = users[0];
 
@@ -107,5 +107,41 @@ router.get("/users/prdata/:userId", isAuthorized, canViewContent, async (req, re
 
     res.send({ data: userData, success: true }); 
 }); 
+
+
+router.patch("/users/privatestatus", isAuthorized, async (req, res) => {
+    const userId = req.session.user.id; 
+
+     try {
+
+        const currentUserStatus = await db.get(`
+            SELECT is_private 
+            FROM users WHERE id = ?`, 
+            userId
+        );
+
+        if (!currentUserStatus) {
+            return res.status(404).send({ success: false, message: "User not found." });
+        }
+
+        const newStatus = !currentUserStatus.is_private; 
+
+        const result = await db.run(`
+            UPDATE users 
+            SET is_private = ?
+            WHERE id = ?`, 
+            newStatus, userId
+        );
+    
+        if (result.changes === 0) {
+            return res.status(404).send({ success: false, message: "No pending request found from this user." });
+        }
+    
+        res.send({ is_private: newStatus, success: true, message: `Changed private status to ${newStatus ? "private" : "public"}` });
+            
+     } catch (error) {
+        res.status(500).send({ success: false, message: "Internal server error." });
+    }
+});
 
 export default router;

@@ -138,7 +138,7 @@
                 </div>
                 <SearchBar {following} {currentUserID} {loadFollowing}></SearchBar>
                 {#if followRequests.length > 0}
-                    <FollowRequests {followRequests}></FollowRequests>
+                    <FollowRequests {followRequests} onAccept={loadFollowers}></FollowRequests>
                 {/if}
             </div>
         </div> 

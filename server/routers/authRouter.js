@@ -25,7 +25,8 @@ router.post("/auth/login", async (req, res) => {
     req.session.user = {
         id: user.id,
         email: user.email,
-        role: user.role
+        role: user.role,
+        status: user.is_private
     };
 
     res.send({data: "", success: true, message: "User is logged in"});

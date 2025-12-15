@@ -1,22 +1,27 @@
 <script>
-    import {postFetch} from "../../util/fetchUtil"; 
+    import {patchFetch} from "../../util/fetchUtil"; 
     import toastr from "toastr";
 
-    let { followRequests } = $props(); 
+    let { followRequests, onAccept } = $props(); 
 
     async function handleRequest(senderId, action) {
         let result;
         if (action === 'accept') {
-            result = await postFetch(`/api/relations/requests/accept/${senderId}`);
+            result = await patchFetch(`/api/relations/requests/accept/${senderId}`);
         } else if (action === 'decline') {
-            result = await postFetch(`/api/relations/requests/decline/${senderId}`);
+            result = await patchFetch(`/api/relations/requests/decline/${senderId}`);
         }
 
         if (result && result.success) {
             toastr.success(result.message);
             
-            // Fjern brugeren fra UI-listen
+            // Remove user from the list 
             followRequests = followRequests.filter(request => request.id != senderId);
+
+            // load followers
+            if (action === 'accept' && onAccept) {
+                await onAccept(); 
+            }
             
         } else {
             toastr.error(result.message || `Fejl ved ${action} af anmodning.`);
@@ -26,7 +31,7 @@
 </script>
 
 <div class="requests-container">
-    <h3>💌 Follow requests ({followRequests.length})</h3>
+    <h3>Follow requests ({followRequests.length})</h3>
 
     {#if followRequests.length === 0}
         <p class="no-requests">No requests at the moment</p>
@@ -57,7 +62,8 @@
     .requests-container {
         padding: 15px;
         border: 1px solid #eee;
-        border-radius: 8px;
+        border-radius: 20px;
+        margin-top: 10px;
         margin-bottom: 20px;
     }
     .request-list {

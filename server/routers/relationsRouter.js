@@ -146,11 +146,62 @@ export default ({ onlineUsers }) => {
     });
 
     router.patch("/requests/accept/:id", isAuthorized, async (req, res) => {
+        const revieverId = req.session.user.id;
+        const senderId = parseInt(req.params.id); 
 
-    })
+        if (!senderId) {
+            return res.status(400).send({ success: false, message: "Missing sender ID." });
+        }
+
+        try {
+            const result = await db.run(`
+                UPDATE follow_requests 
+                SET status = 'ACCEPTED'
+                WHERE sender_id = ? 
+                AND reciever_id = ? 
+                AND status = 'PENDING'`,
+                senderId, revieverId
+            );
+
+            if (result.changes === 0) {
+                return res.status(404).send({ success: false, message: "No pending request found from this user." });
+            }
+
+            res.send({ success: true, message: `Follow request accepted` });
+        
+        } catch (error) {
+            res.status(500).send({ success: false, message: "Internal server error." });
+        };
+
+    });
 
     router.patch("/requests/decline/:id", isAuthorized, async (req, res) => {
+        const revieverId = req.session.user.id;
+        const senderId = parseInt(req.params.id); 
 
+        if (!senderId) {
+            return res.status(400).send({ success: false, message: "Missing sender ID." });
+        }
+
+        try {
+            const result = await db.run(`
+                UPDATE follow_requests 
+                SET status = 'DECLINED'
+                WHERE sender_id = ? 
+                AND reciever_id = ? 
+                AND status = 'PENDING'`,
+                senderId, revieverId
+            );
+
+            if (result.changes === 0) {
+                return res.status(404).send({ success: false, message: "No pending request found from this user." });
+            }
+
+            res.send({ success: true, message: `Follow request declined` });
+        
+        } catch (error) {
+            res.status(500).send({ success: false, message: "Internal server error." });
+        };
     })
     
     return router;
