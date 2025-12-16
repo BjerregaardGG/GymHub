@@ -81,8 +81,6 @@ export default ({ onlineUsers }) => {
             return res.send({ data: [], success: true, message: "No incoming follow requests"});
         }
 
-        console.log("Follow requests:", followRequests);
-
         res.send({ data: followRequests, success: true, message: "Successfully fetched requests" });
 
     });

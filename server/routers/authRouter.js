@@ -9,13 +9,12 @@ router.post("/login", async (req, res) => {
     console.log("Body received:", req.body); 
     const { email, password } = req.body;
 
-    const users = await db.all('SELECT * FROM users WHERE email = ?;', email); // returns an array
+    const user = await db.get('SELECT * FROM users WHERE email = ?;', email); // returns an array
 
-    if (users.length === 0) {
-        return res.send({ data: "", success: false, message: "Could not find user" });
+    if (!user) {
+        return res.send({ success: false, message: "Could not find user" });
     }
 
-    const user = users[0];
     const validatePassword = await verifyPassword(password, user.password);
 
     if (!validatePassword) {
@@ -37,9 +36,9 @@ router.post("/register", async (req, res) => {
     console.log("Body received:", req.body); 
     const { email, password } = req.body;
 
-    const users = await db.all('SELECT * FROM users WHERE email = ?;', email)
+    const user = await db.get('SELECT * FROM users WHERE email = ?;', email)
 
-    if (users.length > 0) {
+    if (user) {
         return res.send({ success: false, message: "User with this email already exists" })
     }
 
@@ -48,10 +47,10 @@ router.post("/register", async (req, res) => {
 
     try{
         await db.run('INSERT INTO users (email, password, role) VALUES (?, ?, ?);', email, hashedPassword, defaultRole);
-        res.send({ data: "", success: true, message: "User is created"});
+        res.send({ success: true, message: "User is created"});
     } catch (error) {
         console.log(error);
-        res.send({ data: "", succes: false, message: "Failed to create user"});
+        res.send({ succes: false, message: "Failed to create user"});
     }
 });
 
@@ -64,9 +63,9 @@ router.post("/forgot-password", async (req, res) => {
     console.log("Email recieved", req.body); 
     const email = req.body.email; 
 
-    const users = await db.all('SELECT * FROM users WHERE email = ?;', email);
+    const user = await db.get('SELECT * FROM users WHERE email = ?;', email);
 
-    if (users.length === 0) {
+    if (!user) {
         return res.send({ success: false, message: "User with this email does not exist" }); 
     }
 
@@ -102,10 +101,10 @@ router.post("/reset-password", async (req, res) => {
 
     // Find the user based on email from the token
     const userEmail = tokenData.email;
-    const users = db.all('SELECT * FROM users WHERE email = ?;', userEmail)
+    const user = db.get('SELECT * FROM users WHERE email = ?;', userEmail)
 
     // If the user does not exist
-    if (users.length === 0) {
+    if (!user) {
         delete resetToken[token];
         return res.send({ success: false, message: "The user does not exist" });
     }

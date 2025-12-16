@@ -185,8 +185,8 @@
     }
 
     .lists-container {
-        display: flex; /* Gør denne container til en flex container */
-        flex-wrap: wrap; /* Tillad ombrydning, hvis pladsen bliver for trang */
+        display: flex; 
+        flex-wrap: wrap; 
         gap: 10px; 
     }
 
@@ -197,7 +197,6 @@
         text-align: center;
     }
     
-    /* For phone */
     @media (max-width: 900px) {
         .content-layout {
             flex-direction: column;

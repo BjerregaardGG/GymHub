@@ -3,8 +3,6 @@
     import WorkoutComments from "./WorkoutComments.svelte";
     let {workoutsData, onUpdateWorkout = null, canUpdate = true} = $props();
 
-    let formType = $state(null); // anvend til comment form (onClose())
-
     function updateWorkout(){
         if (canUpdate) {
             onUpdateWorkout();

@@ -185,12 +185,10 @@
         }
             
         #profile-pic-small {
-            /* Dark Mode Offline: Mørkere rød ramme */
             border-color: #B71C1C; 
         }
             
         #profile-pic-small.online {
-            /* Dark Mode Online: Grøn ramme */
             border-color: #66BB6A;
             box-shadow: 0 0 5px rgba(102, 187, 106, 0.7);
         }

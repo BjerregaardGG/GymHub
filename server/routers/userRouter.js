@@ -14,13 +14,11 @@ router.get("/", isAuthorized, async (req, res) => {
 router.get("/me", isAuthorized, async (req, res) => {
     const userId = req.session.user.id; 
 
-    if (!userId) {
-        return res.status(401).send({ success: false, message: "Not authorized. You need to login"})
+    const userData = await db.get(`SELECT id, name, image_path, is_private FROM users WHERE id = ?;`, userId);
+
+    if (!userData) {
+        return res.status(404).send({ success: false, message: "User not found or session data invalid." });
     }
-
-    const users = await db.all(`SELECT id, name, image_path, is_private FROM users WHERE id = ?;`, userId);
-
-    const userData = users[0];
 
     res.send({ data: userData, success: true});
 });
@@ -28,14 +26,11 @@ router.get("/me", isAuthorized, async (req, res) => {
 router.get("/:id", isAuthorized, async (req, res) => {
     const userId = req.params.id; 
 
-    if (!userId) {
-        return res.status(401).send({ success: false, message: "Could not find user"});
+    const userData = await db.get(`SELECT name, image_path FROM users WHERE id = ?;`, userId);
+
+    if (!userData) {
+        return res.status(404).send({ success: false, message: "User not found or session data invalid." });
     }
-
-    const users = await db.all(`SELECT name, image_path FROM users WHERE id = ?;`, userId);
-
-    const userData = users[0];
-
     res.send({ data: userData, success: true});
 })
 

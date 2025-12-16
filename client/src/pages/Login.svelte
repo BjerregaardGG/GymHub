@@ -2,10 +2,10 @@
     import { postFetch } from "../util/fetchUtil";
     import toastr from 'toastr';
 
-    let email = "";
-    let password = "";
-    let mode = "login";
-    export let loggedIn = false;
+    let email = $state("");
+    let password = $state("");
+    let mode = $state("login");
+    let { loggedIn = $bindable() } = $props();
 
     async function handleLogin() {
         const user = { 
@@ -68,11 +68,11 @@
     <h3>Enter your login</h3>
     <input type="email" bind:value={email} placeholder="Please enter your email">
     <input type="password" bind:value={password} placeholder="Please enter your password">
-    <button class="login-button" on:click={handleLogin}>Login</button>
+    <button class="login-button" onclick={handleLogin}>Login</button>
 
     <div class=bottom-buttons>
-        <button class="new-user-button" on:click={() => mode = "newUser"}>Create an account</button> 
-        <button class="forgot-p-button" on:click={() => mode = "forgotLogin"}>Forgot password?</button>
+        <button class="new-user-button" onclick={() => mode = "newUser"}>Create an account</button> 
+        <button class="forgot-p-button" onclick={() => mode = "forgotLogin"}>Forgot password?</button>
     </div>
 </div>
 
@@ -81,11 +81,11 @@
     <h3>Create a user</h3>
     <input type="email" bind:value={email} placeholder="Please enter your email">
     <input type="password" bind:value={password} placeholder="Please enter your password">
-    <button class="new-user-button" on:click={handleNewUser}>Create User</button>
+    <button class="new-user-button" onclick={handleNewUser}>Create User</button>
 
     <div class=bottom-buttons>
-        <button class="login-button" on:click={() => mode="login"}>Already a user?</button>
-        <button class="forgot-p-button" on:click={() => mode="forgotLogin"}>Forgot your password?</button>
+        <button class="login-button" onclick={() => mode="login"}>Already a user?</button>
+        <button class="forgot-p-button" onclick={() => mode="forgotLogin"}>Forgot your password?</button>
     </div>
 </div>
 
@@ -93,16 +93,14 @@
 <div class="login-form">
     <h3>Did you forget your login?</h3>
     <input type="email" bind:value={email} placeholder="Please enter your email">
-    <button class="forgot-p-button" on:click={handleForgotuser}>Reset password</button>
+    <button class="forgot-p-button" onclick={handleForgotuser}>Reset password</button>
 
     <div class=bottom-buttons>
-    <button class="login-button" on:click={() => mode="login"}>Already a user?</button>
-    <button class= "new-user-button" on:click={() => mode="newUser"}>Create an account</button>
+    <button class="login-button" onclick={() => mode="login"}>Already a user?</button>
+    <button class= "new-user-button" onclick={() => mode="newUser"}>Create an account</button>
     </div>
 </div>
 {/if}
-
-<slot></slot>
 
 <style>
     .login-form {

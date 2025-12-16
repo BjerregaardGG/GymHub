@@ -5,12 +5,7 @@ import db from "../database/connection.js";
 const router = Router({ mergeParams: true });
 
 router.get("/", isAuthorized, async (req, res) => {
-    const userId = req.session.user.id; 
-    const workout_id = req.params.id; 
-
-    if (!userId) {
-        return res.status(401).send({ success: false, message: "Not authorized. You need to login."});
-    }
+    const workout_id = parseInt(req.params.id); 
 
     const comments = await db.all(`
         SELECT c.comment, c.date_recorded, u.name, u.image_path 
@@ -27,10 +22,6 @@ router.post("/", isAuthorized, async(req, res) => {
     const workoutId = parseInt(req.params.id)
     const userId = req.session.user.id; 
     const { comment } = req.body;
-
-    if (!userId) {
-        return res.status(401).send({ success: false, message: "Not authorized. You need to login."});
-    }
 
     try {
         const postCommentQuery = `

@@ -29,7 +29,6 @@
 
 <style>
 
-     /* PR Sektion */
     .pr-section {
         margin-top: 20px;
     }

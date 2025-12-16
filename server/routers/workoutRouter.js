@@ -7,7 +7,6 @@ const router = Router();
 // collects the workouts and their exercises for the logged in user
 router.get("/me", isAuthorized, async (req, res) => {
     const userId = req.session.user.id; 
-    console.log("CALLED /workouts. User ID:", userId); // NYT LOG
 
     if (!userId) {
         return res.status(401).send({ success: false, message: "Not authorized. You need to login"})
@@ -40,10 +39,6 @@ router.get("/me", isAuthorized, async (req, res) => {
 // collects the workouts a specific user
 router.get("/:id", isAuthorized, canViewContent, async (req, res) => {
     const userId = req.params.id;
-
-    if (!userId) {
-        return res.status(401).send({ success: false, message: "User not found"})
-    }
 
     const userWorkouts = await db.all(`SELECT * FROM workouts WHERE user_id = ?`, userId);
 
