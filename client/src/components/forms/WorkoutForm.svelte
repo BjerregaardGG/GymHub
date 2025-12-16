@@ -30,7 +30,7 @@
     async function createWorkout(event){
         event.preventDefault();
 
-        const result = await postFetch("/api/workouts", workoutData);
+        const result = await postFetch("/api/workouts/me", workoutData);
 
         if (!result) {
             toastr.error("Could not create workout");

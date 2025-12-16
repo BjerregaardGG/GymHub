@@ -1,5 +1,5 @@
 
-export function calculateEmblems(workouts, prData){
+export function calculateEmblems(workouts = [], prData = {}){
 
     const trainingSymbols = {
         firstTrainingSymbol: null, 

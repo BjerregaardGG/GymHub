@@ -21,7 +21,7 @@
 
     async function followUser(userId){
 
-        const result = await postFetch(`/api/relations/follow/${userId}`);
+        const result = await postFetch(`/api/relations/following/${userId}`);
 
         if (!result) {
             toastr.error("Could not follow user");

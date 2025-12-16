@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { isAuthorized } from '../middleware/authMiddleware.js';
 import db from "../database/connection.js";
-const router = Router(); 
 
-router.get("/comments/:workoutid", isAuthorized, async (req, res) => {
+const router = Router({ mergeParams: true });
+
+router.get("/", isAuthorized, async (req, res) => {
     const userId = req.session.user.id; 
-    const workout_id = req.params.workoutid; 
+    const workout_id = req.params.id; 
 
     if (!userId) {
         return res.status(401).send({ success: false, message: "Not authorized. You need to login."});
@@ -22,9 +23,10 @@ router.get("/comments/:workoutid", isAuthorized, async (req, res) => {
 
 });
 
-router.post("/comments", isAuthorized, async(req, res) => {
+router.post("/", isAuthorized, async(req, res) => {
+    const workoutId = parseInt(req.params.id)
     const userId = req.session.user.id; 
-    const {comment, workout_id} = req.body;
+    const { comment } = req.body;
 
     if (!userId) {
         return res.status(401).send({ success: false, message: "Not authorized. You need to login."});
@@ -36,7 +38,7 @@ router.post("/comments", isAuthorized, async(req, res) => {
             (workout_id, user_id, comment) 
             VALUES (?, ?, ?)
         `
-        await db.run(postCommentQuery, workout_id, userId, comment);
+        await db.run(postCommentQuery, workoutId, userId, comment);
         
         return res.send({ success: true, message: "Comment added" });
 
@@ -45,5 +47,9 @@ router.post("/comments", isAuthorized, async(req, res) => {
         res.status(500).send({ success: false, message: "Database error" });
     }
 });
+
+router.delete("/", isAuthorized, async (req, res) => {
+
+})
 
 export default router;

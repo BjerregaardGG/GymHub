@@ -34,7 +34,7 @@
             newPassword: newPassword
         };
 
-        const result = await postFetch("/auth/resetpassword", tokenAndPassword);
+        const result = await postFetch("/api/auth/reset-password", tokenAndPassword);
         console.log(result);
 
         if (!result) {

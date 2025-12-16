@@ -6,7 +6,7 @@
     
     async function updateTrainingData(event){
         event.preventDefault();
-        const result = await postFetch("/api/pr", userTrainingData);
+        const result = await postFetch("/api/prs/me", userTrainingData);
 
         if (!result) {
             toastr.error("Could not update training data");

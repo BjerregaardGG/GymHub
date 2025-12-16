@@ -5,7 +5,7 @@ import db from "../database/connection.js";
 const router = Router();
 
 // Authentication - login 
-router.post("/auth/login", async (req, res) => {
+router.post("/login", async (req, res) => {
     console.log("Body received:", req.body); 
     const { email, password } = req.body;
 
@@ -33,7 +33,7 @@ router.post("/auth/login", async (req, res) => {
 });
 
 // Authentication - create user 
-router.post("/auth/createuser", async (req, res) => {
+router.post("/register", async (req, res) => {
     console.log("Body received:", req.body); 
     const { email, password } = req.body;
 
@@ -60,7 +60,7 @@ await initMailer();
 const resetToken = {};
 
 // Authentication - forgot user 
-router.post("/auth/forgotpassword", async (req, res) => {
+router.post("/forgot-password", async (req, res) => {
     console.log("Email recieved", req.body); 
     const email = req.body.email; 
 
@@ -84,7 +84,7 @@ router.post("/auth/forgotpassword", async (req, res) => {
     }
 });
 
-router.post("/auth/resetpassword", async (req, res) => {
+router.post("/reset-password", async (req, res) => {
     const { token, newPassword } = req.body;
 
     // Checks if the token exists
@@ -122,7 +122,7 @@ router.post("/auth/resetpassword", async (req, res) => {
 });
 
 // destroys the session if user logs out
-router.post("/auth/signout", (req, res) => {
+router.post("/logout", (req, res) => {
     req.session.destroy(error => {
         if (error) {
         return res.send({ success: false, message: "Could not sign out" })

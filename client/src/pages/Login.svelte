@@ -13,7 +13,7 @@
             password: password
         }
 
-        const result = await postFetch("/auth/login", user);
+        const result = await postFetch("/api/auth/login", user);
         console.log(result);
 
         if (result && result.success) { 
@@ -36,7 +36,7 @@
             password: password
         }
 
-        const result = await postFetch("/auth/createuser", newUser);
+        const result = await postFetch("/api/auth/reigister", newUser);
         console.log(result);
 
         if (result && result.success) {
@@ -50,7 +50,7 @@
     };
 
     async function handleForgotuser() {
-        const result = await postFetch("/auth/forgotpassword", {email}); 
+        const result = await postFetch("/api/auth/forgot-password", {email}); 
 
         if (result && result.success) {
             toastr.success('Check your e-mail');

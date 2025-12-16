@@ -8,6 +8,7 @@ export async function getFetch(endpoint) {
 
     } catch (error) {
         console.log(error);
+        return null; 
     }
 }
 
@@ -39,6 +40,21 @@ export async function patchFetch(endpoint, body) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(body) 
+        });
+        
+        return await response.json(); 
+        
+    } catch (error) {
+        console.log(error);
+        return null; 
+    }
+}
+
+export async function deleteFetch(endpoint) {
+    try {
+        const response = await fetch(import.meta.env.VITE_BASE_URL + endpoint, {
+            method: 'DELETE', 
+            credentials: 'include',
         });
         
         return await response.json(); 

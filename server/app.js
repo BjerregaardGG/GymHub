@@ -76,22 +76,19 @@ io.on("connection", (socket) => {
 
 // Routers 
 import authRouter from "./routers/authRouter.js";
-app.use(authRouter);
+app.use("/api/auth", authRouter);
 
 import userRouter from "./routers/userRouter.js";
-app.use("/api", userRouter);
+app.use("/api/users", userRouter);
+
+import prRouter from "./routers/prRouter.js";
+app.use("/api/prs", prRouter);
 
 import relationsRouter from "./routers/relationsRouter.js"
 app.use("/api/relations", relationsRouter({ onlineUsers })); // we send the onlineUsers object for the initial status
 
-import prRouter from "./routers/prRouter.js";
-app.use("/api", prRouter);
-
 import workoutRouter from "./routers/workoutRouter.js";
-app.use("/api", workoutRouter);
-
-import commentsRouter from "./routers/commentsRouter.js"
-app.use("/api", commentsRouter); 
+app.use("/api/workouts", workoutRouter);
 
 const PORT = 8080 || Number(process.env.PORT);
 server.listen(PORT, () => {

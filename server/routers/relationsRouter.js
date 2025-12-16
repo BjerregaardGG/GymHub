@@ -6,7 +6,7 @@ import db from "../database/connection.js";
 export default ({ onlineUsers }) => {
     const router = Router(); 
     
-    router.get("/following", isAuthorized, async (req, res) => {
+    router.get("/me/following", isAuthorized, async (req, res) => {
         const userId = req.session.user.id; 
 
         const following = await db.all(`
@@ -33,7 +33,7 @@ export default ({ onlineUsers }) => {
         res.send({ data: followingWithStatus, success: true, message: "Successfully fetched following users" });
     });
 
-    router.get("/followers", isAuthorized, async (req, res) => {
+    router.get("/me/followers", isAuthorized, async (req, res) => {
         const userId = req.session.user.id;
 
         const followers = await db.all(`
@@ -61,7 +61,7 @@ export default ({ onlineUsers }) => {
     });
 
     // if private - we check for requests 
-    router.get("/requests", isAuthorized, async (req, res) => {
+    router.get("/me/requests", isAuthorized, async (req, res) => {
         const userId = req.session.user.id; 
         console.log("Requests for", userId);
 
@@ -87,7 +87,7 @@ export default ({ onlineUsers }) => {
 
     });
 
-    router.post("/follow/:id", isAuthorized, async (req, res ) => {
+    router.post("/following/:id", isAuthorized, async (req, res ) => {
         const senderId = req.session.user.id;
         const recieverId = parseInt(req.params.id); 
 
@@ -145,7 +145,7 @@ export default ({ onlineUsers }) => {
         }
     });
 
-    router.patch("/requests/accept/:id", isAuthorized, async (req, res) => {
+    router.patch("/requests/:id/accept", isAuthorized, async (req, res) => {
         const revieverId = req.session.user.id;
         const senderId = parseInt(req.params.id); 
 
@@ -175,7 +175,7 @@ export default ({ onlineUsers }) => {
 
     });
 
-    router.patch("/requests/decline/:id", isAuthorized, async (req, res) => {
+    router.patch("/requests/:id/decline", isAuthorized, async (req, res) => {
         const revieverId = req.session.user.id;
         const senderId = parseInt(req.params.id); 
 
@@ -202,6 +202,45 @@ export default ({ onlineUsers }) => {
         } catch (error) {
             res.status(500).send({ success: false, message: "Internal server error." });
         };
+    });
+
+    router.delete("/following/:id", isAuthorized, async (req, res) => {
+        const senderId = req.session.user.id;
+        const recieverId = parseInt(req.params.id); 
+
+        const result = await db.run(`
+            DELETE FROM follow_requests
+            WHERE sender_id = ?
+            AND reciever_id = ?
+            AND status = 'ACCEPTED'`
+            , senderId, recieverId
+        );
+
+        if (result.changes === 0) {
+            return res.status(404).send({ success: false, message: "Relation not found or already terminated." });
+        }
+
+        res.send({ success: true, message: `You are now unfollowing` });
+    });
+
+    router.delete("/me/followers/:id", isAuthorized, async (req, res) => {
+        const followerId = parseInt(req.params.id);
+        const userId = req.session.user.id; 
+
+        const result = await db.run(`
+            DELETE FROM follow_requests
+            WHERE sender_id = ?
+            AND reciever_id = ?
+            AND status = 'ACCEPTED'`, 
+            followerId, userId
+        );
+
+        if (result.changes === 0) {
+            return res.status(404).send({ success: false, message: "Relation not found or already terminated." });
+        }
+
+        res.send({ success: true, message: `You removed the follower` });
+
     })
     
     return router;

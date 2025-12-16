@@ -51,7 +51,7 @@
     });
 
     async function loadPRData(){
-        const result = await getFetch("/api/users/prdata");
+        const result = await getFetch("/api/prs/me");
 
         if (!result) {
             toastr.error("Could not load training data");
@@ -62,7 +62,7 @@
     }; 
 
     async function loadFollowing(){
-        const result = await getFetch("/api/relations/following"); 
+        const result = await getFetch("/api/relations/me/following"); 
 
         if (!result) {
             toastr.error("Could not load users you follow"); 
@@ -73,7 +73,7 @@
     };
 
     async function loadFollowers(){
-        const result = await getFetch("/api/relations/followers"); 
+        const result = await getFetch("/api/relations/me/followers"); 
 
         if (!result) {
             toastr.error("Could not load followers"); 
@@ -83,7 +83,9 @@
     };
 
     async function loadWorkouts(){
-        const result = await getFetch("/api/workouts");
+        const result = await getFetch("/api/workouts/me");
+
+        console.log("Fetch result:", result);
 
         if (!result) {
             toastr.error("Could not load workouts");
@@ -94,7 +96,7 @@
     };
 
     async function loadProfile(){
-        const result = await getFetch("/api/users/profile");
+        const result = await getFetch("/api/users/me");
 
         if (!result) {
             toastr.error("Could not load profile data");
@@ -105,7 +107,7 @@
     };
 
     async function loadFollowRequests(){
-        const result = await getFetch("/api/relations/requests"); 
+        const result = await getFetch("/api/relations/me/requests"); 
 
         if (!result) {
             toastr.error("Could not load requests");
@@ -133,8 +135,8 @@
             </div>
             <div class="right-column">
                 <div class="lists-container"> 
-                    <FollowingList {following}></FollowingList>
-                    <FollowerList {followers}></FollowerList>
+                    <FollowingList {following} onDelete={loadFollowing}></FollowingList>
+                    <FollowerList {followers} onDelete={loadFollowers}></FollowerList>
                 </div>
                 <SearchBar {following} {currentUserID} {loadFollowing}></SearchBar>
                 {#if followRequests.length > 0}
@@ -170,13 +172,13 @@
     }
 
     .left-column {
-        flex: 2; 
+        flex: 3; 
         min-width: 0; 
         text-align: center;
     }
 
     .right-column {
-        flex: 1; 
+        flex: 2; 
         display: flex; 
         flex-direction: column; 
         min-width: 250px; 

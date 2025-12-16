@@ -5,8 +5,9 @@ import db from "../database/connection.js";
 const router = Router();
 
 // collects the workouts and their exercises for the logged in user
-router.get("/workouts", isAuthorized, async (req, res) => {
+router.get("/me", isAuthorized, async (req, res) => {
     const userId = req.session.user.id; 
+    console.log("CALLED /workouts. User ID:", userId); // NYT LOG
 
     if (!userId) {
         return res.status(401).send({ success: false, message: "Not authorized. You need to login"})
@@ -37,7 +38,7 @@ router.get("/workouts", isAuthorized, async (req, res) => {
 });
 
 // collects the workouts a specific user
-router.get("/workouts/:id", isAuthorized, canViewContent, async (req, res) => {
+router.get("/:id", isAuthorized, canViewContent, async (req, res) => {
     const userId = req.params.id;
 
     if (!userId) {
@@ -69,7 +70,7 @@ router.get("/workouts/:id", isAuthorized, canViewContent, async (req, res) => {
 });
 
 // creates a new workout with exercises
-router.post("/workouts", isAuthorized, async (req, res) => {
+router.post("/me", isAuthorized, async (req, res) => {
     const userId = req.session.user.id;
     const {title, description, exercises } = req.body; 
 
@@ -107,5 +108,9 @@ router.post("/workouts", isAuthorized, async (req, res) => {
         res.status(500).send({ success: false, message: "Database error" });
     }
 });
+
+// sub route 
+import commentsRouter from "./commentsRouter.js"
+router.use("/:id/comments", commentsRouter); 
 
 export default router; 

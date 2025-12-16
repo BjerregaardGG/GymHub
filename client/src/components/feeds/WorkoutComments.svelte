@@ -12,7 +12,7 @@
     }
 
     async function getComments() {
-        const result = await getFetch(`/api/comments/${workoutID}`)
+        const result = await getFetch(`/api/workouts/${workoutID}/comments`)
 
         if (!result) {
             toastr.error("Could not load comments");

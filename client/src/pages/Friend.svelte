@@ -13,7 +13,7 @@
     let workoutsData = $state([])
 
     async function loaddProfile(){
-        const result = await getFetch(`/api/users/profile/${id}`);
+        const result = await getFetch(`/api/users/${id}`);
 
         if (result && result.success) {
             profileData = result.data;  
@@ -23,7 +23,9 @@
     };
 
     async function loadPRData(){
-        const result = await getFetch(`/api/users/prdata/${id}`);
+        const result = await getFetch(`/api/prs/${id}`);
+
+        console.log("pr data:", result)
 
         if (result && result.success) {
             userTrainingData = result.data;  

@@ -11,14 +11,13 @@
     }
 
     let commentData = $state({ 
-        workout_id: workoutID,
         comment: "",
     });
 
     async function createComment(event){
         event.preventDefault();
 
-        const result = await postFetch("/api/comments", commentData);
+        const result = await postFetch(`/api/workouts/${workoutID}/comments`, commentData);
 
         if (!result) {
             toastr.error("Could not create workout");

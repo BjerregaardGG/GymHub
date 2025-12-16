@@ -18,7 +18,7 @@
   let loading = $state(true);
 
   async function handlePrivateStatusToggle() {
-        const result = await patchFetch("/api/users/privatestatus"); 
+        const result = await patchFetch("/api/users/me/privacy"); 
         
         if (result && result.success) {
             isPrivate = result.is_private; 
@@ -29,7 +29,7 @@
     }
 
   async function checkAuthentication(){
-    const result = await getFetch("/api/users/profile"); 
+    const result = await getFetch("/api/users/me"); 
 
     // if success -> we have a session
     if (result && result.success) {
@@ -47,7 +47,7 @@
 
   async function handleSignOut(e) {
     e.preventDefault();
-    const result = await postFetch("/auth/signout"); 
+    const result = await postFetch("/api/auth/logout"); 
 
     if (!result) {
       toastr.error("Could not sign out. Something went wrong.")
