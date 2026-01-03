@@ -105,44 +105,63 @@ if (deleteMode) {
      db.run(`INSERT INTO follow_requests (sender_id, reciever_id, status) VALUES 
           (4, 1, 'ACCEPTED')`);
 
-     // PR Data
-     // Nanna's PR
-     db.run(`INSERT INTO pr_data (user_id, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max)
-          VALUES (2, 55.0, 95.0, 110.0, 28.5, 7)`);
-     // Thomas' PR
-     db.run(`INSERT INTO pr_data (user_id, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max)
-          VALUES (3, 90.0, 140.0, 175.0, 23.0, 15)`);
-     // Phillip's PR
-     db.run(`INSERT INTO pr_data (user_id, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max)
-          VALUES (4, 75.0, 110.0, 140.0, 35.1, 10)`);
-     
-     db.run(`INSERT INTO pr_data (user_id, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max)
-          VALUES (5, 75.0, 110.0, 140.0, 35.1, 10)`);
+     const prData = [
+        { user_id: 1, bench_press: 80, squat: 120, deadlift: 150, run5k: 25, pullUps: 10 },
+        { user_id: 2, bench_press: 55, squat: 95, deadlift: 110, run5k: 28.5, pullUps: 7 },
+        { user_id: 3, bench_press: 90, squat: 140, deadlift: 175, run5k: 23, pullUps: 15 },
+        { user_id: 4, bench_press: 75, squat: 110, deadlift: 140, run5k: 35.1, pullUps: 10 },
+        { user_id: 5, bench_press: 65, squat: 100, deadlift: 130, run5k: 30, pullUps: 8 }
+     ];
 
-     // Workouts
-     db.run(`INSERT INTO workouts (user_id, title, description) VALUES 
-          (2, 'Leg Day', 'Squats, lunges, and leg press exercises'),
-          (3, 'Chest & Back', 'Bench press, pull-ups, rows'),
-          (4, 'Full Body', 'Combination of strength and cardio')`);
+     prData.forEach(pr => {
+          db.run(`
+              INSERT INTO pr_data 
+              (user_id, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max)
+              VALUES (?, ?, ?, ?, ?, ?)`,
+              pr.user_id, pr.bench_press, pr.squat, pr.deadlift, pr.run5k, pr.pullUps
+          );
+     });
 
-     // Workout exercises
-     // Nanna's Leg Day
-     db.run(`INSERT INTO workout_exercises (workout_id, name, sets, reps, weight_kg) VALUES 
-          (1, 'Squat', 4, 10, 60.0),
-          (1, 'Lunges', 3, 12, 15.0),
-          (1, 'Leg Press', 3, 10, 100.0)`);
+     const users = [1,2,3,4,5];
 
-     // Thomas' Chest & Back
-     db.run(`INSERT INTO workout_exercises (workout_id, name, sets, reps, weight_kg) VALUES
-          (2, 'Bench Press', 4, 8, 85.0),
-          (2, 'Pull-ups', 3, 12, NULL),
-          (2, 'Barbell Rows', 3, 10, 60.0)`);
+     const workoutsTemplate = [
+          { title: "Leg Day", description: "Squats, lunges, leg press", exercises: [
+               { name: "Squat", sets: 4, reps: 10, weight_kg: 60 },
+               { name: "Lunges", sets: 3, reps: 12, weight_kg: 20 },
+               { name: "Leg Press", sets: 3, reps: 10, weight_kg: 100 },
+          ]},
+          { title: "Chest & Back", description: "Bench press, pull-ups, rows", exercises: [
+               { name: "Bench Press", sets: 4, reps: 8, weight_kg: 50 },
+               { name: "Pull-ups", sets: 3, reps: 10, weight_kg: null },
+               { name: "Rows", sets: 3, reps: 12, weight_kg: 40 },
+          ]},
+          { title: "Cardio & Core", description: "Running, planks", exercises: [
+               { name: "Running", sets: 1, reps: 1, weight_kg: null },
+               { name: "Planks", sets: 3, reps: 1, weight_kg: null },
+          ]},
+     ];
 
-     // Phillip's Full Body
-     db.run(`INSERT INTO workout_exercises (workout_id, name, sets, reps, weight_kg) VALUES
-          (3, 'Deadlift', 4, 6, 120.0),
-          (3, 'Push-ups', 3, 15, NULL),
-          (3, 'Running', 1, 1, NULL)`);
+     let workoutId = 1;
+
+     users.forEach(user_id => {
+          workoutsTemplate.forEach(w => {
+               db.run(`
+                    INSERT INTO workouts (user_id, title, description)
+                    VALUES (?, ?, ?)`,
+                    user_id, w.title, w.description
+               );
+
+               w.exercises.forEach(ex => {
+                    db.run(`
+                         INSERT INTO workout_exercises (workout_id, name, sets, reps, weight_kg)
+                         VALUES (?, ?, ?, ?, ?)`,
+                         workoutId, ex.name, ex.sets, ex.reps, ex.weight_kg
+                    );
+               });
+
+               workoutId++;
+          });
+     });
 
      // Comments
      db.run(`INSERT INTO comments (workout_id, user_id, comment) VALUES
