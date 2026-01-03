@@ -1,6 +1,7 @@
 <script>
-    import { getFetch } from "../../util/fetchUtil.js";
+    import { getFetch, deleteFetch } from "../../util/fetchUtil.js";
     import { commentsUpdated } from "../../stores/commentStore.js";
+    import { user } from "../../stores/userStore.js";
     import toastr from "toastr";
 
     let {workoutID} = $props(); // catch workoutId
@@ -22,6 +23,17 @@
         }
     };
 
+    async function deleteComment(commentId){
+        const result = await deleteFetch(`/api/workouts/${workoutID}/comments/${commentId}`); 
+
+        if (!result) {
+            toastr.error(result.message);
+        } else {
+            toastr.success(result.message);
+            getComments();
+        }
+    }
+
     // Runs at mount and everytime store changes
     $effect(() => {
         const updateTrigger = $commentsUpdated; // reaactive trigger --> getComments() is called
@@ -36,7 +48,7 @@
 
 {#if commentsIsExpanded }
     <ul class="comments-list">
-        {#each comments as comment}
+        {#each comments as comment (comment.id)}
             <li>
                 <img 
                     src={`${import.meta.env.VITE_BASE_URL}${comment.image_path}`} 
@@ -48,6 +60,12 @@
                     <span class="comment-text">{comment.comment}</span>
                     <span class="comment-date">{new Date(comment.date_recorded).toLocaleString()}</span>
                 </div>
+
+                {#if comment.user_id === $user.id}
+                    <button class="delete-comment-btn" onclick={() => deleteComment(comment.id)}>
+                    🗑
+                    </button>
+                {/if}
             </li>
         {/each}
     </ul>
@@ -123,6 +141,22 @@
         padding: 5px 0;
         margin-bottom: 5px;
         font-weight: 600;
+    }
+
+    .delete-comment-btn {
+        background-color: #f40a0e; 
+        margin-top: 12px; 
+        border: none;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .delete-comment-btn:hover {
+        background-color: #ff7875; 
     }
     
     /* Dark mode support */

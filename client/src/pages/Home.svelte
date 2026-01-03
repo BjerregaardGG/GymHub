@@ -5,6 +5,8 @@
     import { onMount } from 'svelte';
     import { getFetch } from "../util/fetchUtil.js";
 
+    import { user } from "../stores/userStore.js";
+
     import PRForm from '../components/forms/PRForm.svelte';
     import WorkoutForm from '../components/forms/WorkoutForm.svelte';
     import SearchBar from '../components/SearchBar.svelte'
@@ -102,6 +104,7 @@
             toastr.error("Could not load profile data");
         } else {
             profileData = result.data; 
+            user.set(result.data); // updates the user store 
             currentUserID = profileData.id; 
         }
     };
@@ -123,7 +126,7 @@
     onMount(loadFollowRequests); 
     onMount(loadPRData);
     onMount(loadWorkouts);
-   
+
 
 </script>
 {#if formType === null}
