@@ -25,8 +25,17 @@
 
         if (!result) {
             toastr.error("Could not follow user");
-        } else {
-            toastr.success(result.message);
+        }
+        
+        toastr.success(result.message);
+
+        users = users.map(user =>
+            user.id === userId ? 
+                { ...user, followStatus: result.status } // sets status 
+                : user
+        );
+
+        if (result.status === "ACCEPTED") {
             await loadFollowing();
             await loadUsers(); 
         }
@@ -53,11 +62,18 @@
         <ul class="search-results">
             {#if filteredUsers.length > 0}
                 {#each filteredUsers as user}
-                <li>   
+                <li>
+                    <!-- If we already follow-->
                     {#if following.some(following => following.id == user.id)}
                         <Link to={`/profile/${user.id}`} class="friend-link" title={`Go to ${user.name}'s profile`}>
                             <p class="friend-name-text">{user.name}</p>
                         </Link>
+                    <!-- if follow status is pending -->
+                    {:else if user.followStatus === 'PENDING'}
+                        <p class="friend-name-text not-friend">{user.name}</p>
+                        <button disabled class="pending-btn">
+                            Pending ⏳
+                        </button>
                     {:else}
                         <p class="friend-name-text not-friend">{user.name}</p>
                         <button onclick={() => followUser(user.id)} title="Follow user">
@@ -76,7 +92,7 @@
 <style>
 .user-search {
     position: relative;
-    width: 92%;
+    width: 88%;
     margin: 0 auto;
     margin-top: 20px; 
     margin-left: 2px;
@@ -105,6 +121,12 @@
     margin: 0;
     z-index: 10;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.pending-btn {
+    background: #d27e43;
+    color: #666;
+    cursor: not-allowed;
 }
 
 .no-results {

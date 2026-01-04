@@ -113,7 +113,10 @@ export default ({ onlineUsers }) => {
                 } else if (existingRelation.status === 'PENDING') {
                     return res.send({ success: true, message: "Follow request already sent, waiting for acceptance." });
                 } else if (existingRelation.status === 'DECLINED') {
-                    return res.send({ success: true, message: "Follow request was previously declined. Try again later." });
+                    await db.run(`
+                        DELETE FROM follow_requests
+                        WHERE sender_id = ? AND reciever_id = ?`
+                        , senderId, recieverId);
                 }
             };
 
@@ -136,7 +139,7 @@ export default ({ onlineUsers }) => {
 
             const succesMessage = isPrivate ? "Follow request sent" : "You are now following";
 
-            res.send({ success: true, message: succesMessage });
+            res.send({ success: true, status: status, message: succesMessage });
         
         }catch(error) {
             res.status(500).send({ success: false, message: "Could not process follow request due to server error." });

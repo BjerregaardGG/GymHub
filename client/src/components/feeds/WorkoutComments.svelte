@@ -18,7 +18,11 @@
         if (!result) {
             toastr.error("Could not load comments");
         } else {
-            comments = result.data; 
+            comments = result.data.map(comment => ({
+                ...comment, 
+                localDate: new Date(comment.date_recorded).toLocaleString()
+                }));
+
             console.log($state.snapshot(comments));
         }
     };
@@ -42,33 +46,34 @@
 
 </script>
 
+{#if comments.length > 0}
 <button class="toggle-comments-button" onclick={showComments}>
     {commentsIsExpanded ? `Hide ${comments.length} comments ⬆` : `View ${comments.length} comments ⬇`} 
 </button>
+    {#if commentsIsExpanded }
+        <ul class="comments-list">
+            {#each comments as comment (comment.id)}
+                <li>
+                    <img 
+                        src={`${import.meta.env.VITE_BASE_URL}${comment.image_path}`} 
+                        alt={`Profile picture for ${comment.name}`} 
+                        id="profile-pic-small"
+                    />
+                    <div class="comment-content">
+                        <span class="comment-name">{comment.name}</span>
+                        <span class="comment-text">{comment.comment}</span>
+                        <span class="comment-date">{comment.localDate}</span>
+                    </div>
 
-{#if commentsIsExpanded }
-    <ul class="comments-list">
-        {#each comments as comment (comment.id)}
-            <li>
-                <img 
-                    src={`${import.meta.env.VITE_BASE_URL}${comment.image_path}`} 
-                    alt={`Profile picture for ${comment.name}`} 
-                    id="profile-pic-small"
-                />
-                <div class="comment-content">
-                    <span class="comment-name">{comment.name}</span>
-                    <span class="comment-text">{comment.comment}</span>
-                    <span class="comment-date">{new Date(comment.date_recorded).toLocaleString()}</span>
-                </div>
-
-                {#if comment.user_id === $user.id}
-                    <button class="delete-comment-btn" onclick={() => deleteComment(comment.id)}>
-                    🗑
-                    </button>
-                {/if}
-            </li>
-        {/each}
-    </ul>
+                    {#if comment.user_id === $user.id}
+                        <button class="delete-comment-btn" onclick={() => deleteComment(comment.id)}>
+                        🗑
+                        </button>
+                    {/if}
+                </li>
+            {/each}
+        </ul>
+    {/if}
 {/if}
 
 <style>
@@ -144,7 +149,7 @@
     }
 
     .delete-comment-btn {
-        background-color: #f40a0e; 
+        background-color: #da4548; 
         margin-top: 12px; 
         border: none;
         color: white;

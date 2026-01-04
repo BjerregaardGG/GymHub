@@ -4,7 +4,6 @@
 
   import Login from "./pages/Login.svelte";
   import Home from "./pages/Home.svelte";
-  import Clients from "./pages/Clients.svelte";
   import Friend from "./pages/Friend.svelte";
   import ResetPassword from "./pages/ResetPassword.svelte";
   import WorkoutForm from "./components/forms/WorkoutForm.svelte";
@@ -71,12 +70,11 @@
       <div class="nav-container">
           <div class="nav-left">
               <Link to="/">Home</Link>
-              <Link to="/clients">Clients</Link>
               <Link to="/postworkout">Post workout</Link>
           </div>
           
           <div class="nav-title">
-              GYM HUB
+              <Link to="/">GYM HUB</Link>
           </div>
 
           <div class="nav-right">
@@ -104,15 +102,6 @@
       {:else}
         <Login bind:loggedIn></Login>
       {/if}
-    </Route>
-
-    <!-- Users -->
-    <Route path="/clients">
-     {#if loggedIn}
-      <Clients></Clients>
-     {:else}
-     <Login bind:loggedIn></Login>
-     {/if}
     </Route>
 
      <!-- Post Workout Form-->

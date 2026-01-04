@@ -32,7 +32,7 @@
 </script>
 
 <button class="toggle-form-button" onclick={showCommentForm}>
-    {commentFormIsExpanded ? 'Cancel' : 'Add a'} comment
+    {commentFormIsExpanded ? 'Cancel' : 'Post a'} comment
 </button>
 
 {#if commentFormIsExpanded}

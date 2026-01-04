@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS comments (
      workout_id INTEGER NOT NULL, 
      user_id INTEGER NOT NULL, 
      comment TEXT NOT NULL,
-     date_recorded TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, 
+     date_recorded TEXT NOT NULL DEFAULT (datetime('now','localtime')),
      FOREIGN KEY (workout_id) REFERENCES workouts(id) ON DELETE CASCADE, 
      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

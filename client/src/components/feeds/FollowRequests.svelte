@@ -42,12 +42,12 @@
                     <span class="request-name">{request.name}</span>
                     <div class="request-actions">
                         <button 
-                            class="btn btn-success" 
+                            class="btn-success" 
                             onclick={() => handleRequest(request.id, 'accept')}>
                             Accept
                         </button>
                         <button 
-                            class="btn btn-danger" 
+                            class="btn-decline" 
                             onclick={() => handleRequest(request.id, 'decline')}>
                             Decline 
                         </button>
@@ -59,12 +59,21 @@
 </div>
 
 <style>
+    .btn-success {
+        background-color: rgb(19, 170, 19);
+    }
+
+    .btn-decline {
+        background-color: rgb(235, 64, 64);
+    }
+
     .requests-container {
         padding: 15px;
         border: 1px solid #eee;
         border-radius: 20px;
-        margin-top: 10px;
+        margin-top: 20px;
         margin-bottom: 20px;
+        margin-right: 30px;
     }
     .request-list {
         list-style: none;
