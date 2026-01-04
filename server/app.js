@@ -1,7 +1,7 @@
 import 'dotenv/config'; 
 import express from 'express';
 import http from 'http'; 
-import { Server } from 'socket.io'; 
+import { Server } from 'socket.io'; // our websocket server 
 
 const app = express();
 const server = http.createServer(app);
@@ -9,13 +9,12 @@ const server = http.createServer(app);
 const onlineUsers = {}; 
 
 app.use(express.json()); 
-app.use(express.static("public"));
 app.use("/uploads", express.static("uploads")) // profile pictures
 
 import cors from 'cors';
 app.use(cors({
     origin: "http://localhost:5173",
-    credentials: true
+    credentials: true // we include cookies 
 }));
 
 // Session middleware
@@ -26,7 +25,7 @@ import {genralLimiter, authLimiter} from "./util/rateLimit.js";
 app.use(genralLimiter);
 app.use("/auth", authLimiter); 
 
-// Initializing socket.io
+// Initializing socket.io with CORS
 const io = new Server(server, {
     cors: {
         origin: ["http://localhost:5173"],
@@ -45,7 +44,6 @@ io.on("connection", (socket) => {
         
         // Register the user as online 
         onlineUsers[userId] = socket.id;
-        console.log(onlineUsers);
         
         // emits to all the sockets but itself
         socket.broadcast.emit('friend-status-update', { 
@@ -57,7 +55,7 @@ io.on("connection", (socket) => {
         console.log(`[Socket] Unknown user connected.`);
     }
 
-    // Håndter frakobling
+    // When disconnecting...
     socket.on("disconnect", () => {
         if (userId && onlineUsers[userId]) {
             console.log(`[Socket] User ${userId} disconnected.`);
@@ -74,7 +72,7 @@ io.on("connection", (socket) => {
     });
 });
 
-// Routers 
+// Routers
 import authRouter from "./routers/authRouter.js";
 app.use("/api/auth", authRouter);
 
@@ -85,7 +83,7 @@ import prRouter from "./routers/prRouter.js";
 app.use("/api/prs", prRouter);
 
 import relationsRouter from "./routers/relationsRouter.js"
-app.use("/api/relations", relationsRouter({ onlineUsers })); // we send the onlineUsers object for the initial status
+app.use("/api/relations", relationsRouter({ onlineUsers })); // we send the onlineUsers object for the initial online status
 
 import workoutRouter from "./routers/workoutRouter.js";
 app.use("/api/workouts", workoutRouter);
