@@ -72,4 +72,71 @@ router.post("/me", isAuthorized, async (req, res) => {
     }
 });
 
+/*
+router.post("/me", isAuthorized, async (req, res) => {
+    const userId = req.session.user.id; 
+    const { bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max } = req.body;
+
+    if (
+        bench_press_kg === undefined &&
+        squat_kg === undefined &&
+        deadlift_kg === undefined &&
+        run_5k_min === undefined &&
+        pull_ups_max === undefined
+    ) {
+        return res.status(400).send({ success: false, message: "No PR data received" });
+    }
+
+    await db.run(`
+        INSERT INTO pr_data
+        (user_id, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max)
+        VALUES (?, ?, ?, ?, ?, ?)`, 
+        userId, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max
+    );
+
+    return res.send({ success: true, message: "PR data created" }); 
+});
+
+router.put("/me", isAuthorized, async (req, res) => {
+    const userId = req.session.user.id;
+    const { bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max } = req.body;
+
+    if (
+        bench_press_kg === undefined &&
+        squat_kg === undefined &&
+        deadlift_kg === undefined &&
+        run_5k_min === undefined &&
+        pull_ups_max === undefined
+    ) {
+        return res.status(400).send({ success: false, message: "No PR data received" });
+    }
+
+    const existing = await db.get(`SELECT * FROM pr_data WHERE user_id = ?`, userId);
+    if (!existing) {
+        return res.status(404).send({ success: false, message: "PR data does not exist" });
+    }
+
+    await db.run(
+        `UPDATE pr_data SET
+            bench_press_kg = ?,
+            squat_kg = ?,
+            deadlift_kg = ?,
+            run_5k_min = ?,
+            pull_ups_max = ?,
+            date_recorded = CURRENT_TIMESTAMP
+         WHERE user_id = ?`,
+        bench_press_kg,
+        squat_kg,
+        deadlift_kg,
+        run_5k_min,
+        pull_ups_max,
+        userId
+    );
+
+    res.send({ success: true, message: "PR data updated" });
+
+}); 
+
+*/
+
 export default router;
