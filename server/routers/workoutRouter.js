@@ -1,36 +1,27 @@
 import {Router} from 'express';
 import { isAuthorized } from '../middleware/authMiddleware.js';
 import { canViewContent } from '../middleware/privacyMiddleware.js';
+import { getWorkoutsWithExercisesById } from './services/workoutService.js';
 import db from "../database/connection.js";
+
 const router = Router();
 
 // collects the workouts and their exercises for the logged in user
 router.get("/me", isAuthorized, async (req, res) => {
     const userId = req.session.user.id; 
 
-    if (!userId) {
-        return res.status(401).send({ success: false, message: "Not authorized. You need to login"})
+    const workouts = await getWorkoutsWithExercisesById(userId);
+
+    if (workouts.length === 0) {
+        return res.send({
+            data: [],
+            success: true,
+            message: "No workouts found"
+        });
     }
-
-    const userWorkouts = await db.all(`SELECT * FROM workouts WHERE user_id = ?`, userId);
-
-    if (userWorkouts.length === 0) {
-        return res.send({ data: [], success: true, message: "No workouts found" });
-    }
-
-    const workoutsPlusExercisesPromises = userWorkouts.map(async (workout) => {
-        const exercises = await db.all(
-            `SELECT * FROM workout_exercises WHERE workout_id = ?`, 
-            workout.id
-        );
-
-        return { ...workout, exercises: exercises };
-    });
-
-    const workoutsPlusExercises = await Promise.all(workoutsPlusExercisesPromises);
 
     res.send({ 
-        data: workoutsPlusExercises, 
+        data: workouts, 
         success: true, 
         message: "Successfully fetched workouts with exercises" 
     });
@@ -40,25 +31,18 @@ router.get("/me", isAuthorized, async (req, res) => {
 router.get("/:id", isAuthorized, canViewContent, async (req, res) => {
     const userId = req.params.id;
 
-    const userWorkouts = await db.all(`SELECT * FROM workouts WHERE user_id = ?`, userId);
+    const workouts = await getWorkoutsWithExercisesById(userId);
 
-    if (userWorkouts.length === 0) {
-        return res.send({ data: [], success: true, message: "No workouts found" });
+    if (workouts.length === 0) {
+        return res.send({
+            data: [],
+            success: true,
+            message: "No workouts found"
+        });
     }
 
-    const workoutsPlusExercisesPromises = userWorkouts.map(async (workout) => {
-        const exercises = await db.all(
-            `SELECT * FROM workout_exercises WHERE workout_id = ?`, 
-            workout.id
-        );
-
-        return { ...workout, exercises: exercises };
-    });
-
-    const workoutsPlusExercises = await Promise.all(workoutsPlusExercisesPromises);
-
     res.send({ 
-        data: workoutsPlusExercises, 
+        data: workouts, 
         success: true, 
         message: "Successfully fetched workouts with exercises" 
     });

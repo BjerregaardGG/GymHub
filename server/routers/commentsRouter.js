@@ -2,7 +2,7 @@ import { Router } from "express";
 import { isAuthorized } from '../middleware/authMiddleware.js';
 import db from "../database/connection.js";
 
-const router = Router({ mergeParams: true });
+const router = Router({ mergeParams: true }); // allows req.params.id
 
 router.get("/", isAuthorized, async (req, res) => {
     const workout_id = parseInt(req.params.id); 
@@ -34,7 +34,7 @@ router.post("/", isAuthorized, async(req, res) => {
         return res.send({ success: true, message: "Comment added" });
 
     } catch (error) {
-        console.error(error);
+        console.log(error);
         res.status(500).send({ success: false, message: "Database error" });
     }
 });
@@ -53,7 +53,7 @@ router.delete("/:commentId", isAuthorized, async (req, res) => {
     res.send({ success: true, message: "Comment deleted" });
 
     } catch(error) {
-        console.log(error); 
+        console.log(error);
         res.status(500).send({ success: false, message: "Database error" });
     }
 

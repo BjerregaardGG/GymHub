@@ -3,6 +3,7 @@ import { isAuthorized} from '../middleware/authMiddleware.js';
 
 import db from "../database/connection.js";
 
+// we export the route as a function so we can recieve the object
 export default ({ onlineUsers }) => {
     const router = Router(); 
     
@@ -23,11 +24,11 @@ export default ({ onlineUsers }) => {
     
         const followingWithStatus = following.map(user => ({
             ...user,            
-            isOnline: !!onlineUsers[user.id] 
+            isOnline: onlineUsers[user.id] ? true : false
         }));
 
         if (following.length === 0) {
-        return res.send({ data: [], success: true, message: "No following users found" });
+            return res.send({ data: [], success: true, message: "No following users found" });
         }
 
         res.send({ data: followingWithStatus, success: true, message: "Successfully fetched following users" });
@@ -50,7 +51,7 @@ export default ({ onlineUsers }) => {
 
         const followersWithStatus = followers.map(user => ({
             ...user,            
-            isOnline: !!onlineUsers[user.id] 
+            isOnline: onlineUsers[user.id] ? true : false
         }));
 
         if (followers.length === 0) {
@@ -63,7 +64,6 @@ export default ({ onlineUsers }) => {
     // if private - we check for requests 
     router.get("/me/requests", isAuthorized, async (req, res) => {
         const userId = req.session.user.id; 
-        console.log("Requests for", userId);
 
         const followRequests = await db.all(`
             SELECT 
@@ -85,6 +85,7 @@ export default ({ onlineUsers }) => {
 
     });
 
+    // follow a user 
     router.post("/following/:id", isAuthorized, async (req, res ) => {
         const senderId = req.session.user.id;
         const recieverId = parseInt(req.params.id); 

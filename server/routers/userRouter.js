@@ -38,7 +38,6 @@ router.patch("/me/privacy", isAuthorized, async (req, res) => {
     const userId = req.session.user.id; 
 
      try {
-
         const currentUserStatus = await db.get(`
             SELECT is_private 
             FROM users WHERE id = ?`, 
@@ -59,7 +58,7 @@ router.patch("/me/privacy", isAuthorized, async (req, res) => {
         );
     
         if (result.changes === 0) {
-            return res.status(404).send({ success: false, message: "No pending request found from this user." });
+            return res.status(404).send({ success: false, message: "Could not change privacy." });
         }
     
         res.send({ is_private: newStatus, success: true, message: `Changed private status to ${newStatus ? "private" : "public"}` });
