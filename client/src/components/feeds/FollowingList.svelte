@@ -4,6 +4,7 @@
     import toastr from "toastr";
 
     let { following, onDelete } = $props();
+
     let activeMenu = $state(null);
 
     async function deleteFollowing(userId){
@@ -35,7 +36,7 @@
                     src={`${import.meta.env.VITE_BASE_URL}${user.image_path}`} 
                     alt={`Profile picture for ${user.name}`} 
                     id="profile-pic-small"
-                    class:online={user.isOnline}
+                    class:online={user.isOnline} 
                     title={user.isOnline ? 'Online' : 'Offline'}
                 />
 

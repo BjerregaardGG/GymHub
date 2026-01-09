@@ -1,6 +1,7 @@
 <script>
     import CommentForm from "../forms/CommentForm.svelte";
     import WorkoutComments from "./WorkoutComments.svelte";
+    
     let {workoutsData, onUpdateWorkout = null, canUpdate = true} = $props();
 
     function updateWorkout(){

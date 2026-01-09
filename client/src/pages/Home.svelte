@@ -37,12 +37,13 @@
         socket.on('friend-status-update', (data) => {
             const { userId, isOnline } = data; // collects userId and online status from data
 
-            following = following.map(user => {
-                if (user.id == userId) { 
-                    return { ...user, isOnline: isOnline };
-                }
-                return user;
-            });
+            following = following.map(user => 
+                user.id === userId ? { ...user, isOnline } : user
+            );
+
+            followers = followers.map(user => 
+                user.id === userId ? { ...user, isOnline } : user
+            );
         });
 
         return () => {

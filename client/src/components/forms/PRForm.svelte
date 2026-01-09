@@ -14,6 +14,7 @@
         const minutes = Math.floor(runTime); 
         const decimal = runTime - minutes; 
 
+        // true if between 0 and 0.60
         return decimal >= 0 && decimal < 0.60; 
     }
     

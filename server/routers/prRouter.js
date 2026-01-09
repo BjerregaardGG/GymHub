@@ -19,7 +19,7 @@ router.get("/me", isAuthorized, async (req, res) => {
 
 
 router.get("/:id", isAuthorized, canViewContent, async (req, res) => { 
-    const profileUserId = req.params.id;
+    const profileUserId = parseInt(req.params.id);
 
     const prData = await getPrInformation(profileUserId);
 
@@ -107,6 +107,5 @@ router.put("/me", isAuthorized, async (req, res) => {
     res.send({ success: true, message: "PR data updated" });
 
 }); 
-
 
 export default router;

@@ -24,7 +24,7 @@
             }
             
         } else {
-            toastr.error(result.message || `Fejl ved ${action} af anmodning.`);
+            toastr.error(result.message || `Error at ${action} of request.`);
         }
     };
 

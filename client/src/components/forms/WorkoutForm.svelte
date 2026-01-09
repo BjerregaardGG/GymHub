@@ -24,7 +24,7 @@
 
     function removeLatestExercise(index){
         workoutData.exercises.splice(index, 1);
-        workoutData.exercises = workoutData.exercises;
+        workoutData.exercises = workoutData.exercises; // gen-render UI
     }
 
     async function createWorkout(event){
