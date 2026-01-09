@@ -73,7 +73,7 @@
     */
 </script>
 
-{#if Object.keys(userTrainingData).length > 0}
+{#if userTrainingData?.id}
 <form class="pr-form" onsubmit={updatePrData}>
     <label class="pr-label">Bench Press (kg):
         <input type="number" step="0.25" bind:value={userTrainingData.bench_press_kg} />

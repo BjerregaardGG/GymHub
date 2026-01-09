@@ -32,7 +32,7 @@ router.post("/login", async (req, res) => {
 
 // Authentication - create user 
 router.post("/register", async (req, res) => {
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
 
     const user = await db.get('SELECT * FROM users WHERE email = ?;', email)
 
@@ -44,7 +44,7 @@ router.post("/register", async (req, res) => {
     const defaultRole = "USER"; 
 
     try{
-        await db.run('INSERT INTO users (email, password, role) VALUES (?, ?, ?);', email, hashedPassword, defaultRole);
+        await db.run('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?);', name, email, hashedPassword, defaultRole);
         res.send({ success: true, message: "User is created"});
     } catch (error) {
         res.send({ succes: false, message: "Failed to create user"});

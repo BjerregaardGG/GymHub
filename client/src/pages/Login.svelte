@@ -4,6 +4,7 @@
 
     let email = $state("");
     let password = $state("");
+    let name = $state("");
     let mode = $state("login");
     let { loggedIn = $bindable() } = $props();
 
@@ -32,6 +33,7 @@
         }
         
         const newUser = { 
+            name: name,
             email: email,
             password: password
         }
@@ -79,6 +81,7 @@
 {:else if mode==="newUser"}
 <div class="login-form">
     <h3>Create a user</h3>
+    <input type="name" bind:value={name} placeholder="Please enter your name">
     <input type="email" bind:value={email} placeholder="Please enter your email">
     <input type="password" bind:value={password} placeholder="Please enter your password">
     <button class="new-user-button" onclick={handleNewUser}>Create User</button>

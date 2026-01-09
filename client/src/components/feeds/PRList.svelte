@@ -12,7 +12,7 @@
 <div class="pr-section">
     {#if Object.keys(userTrainingData).length > 0}
     <ul class="pr-list">
-        {#each Object.entries(userTrainingData) as [metric, value]}
+        {#each Object.entries(userTrainingData).filter(([key]) => key != "id") as [metric, value]}
             <li class="pr-item">
                 <strong>{metric.replace(/_/g, ' ').toUpperCase()}:</strong> {value}
             </li>

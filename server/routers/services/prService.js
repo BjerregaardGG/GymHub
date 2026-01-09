@@ -4,7 +4,7 @@ export async function getPrInformation(userId){
 
     const trainingDataQuery = `
         SELECT 
-            bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max
+            id, bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max
         FROM 
             pr_data 
         WHERE 
