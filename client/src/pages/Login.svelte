@@ -36,7 +36,7 @@
             password: password
         }
 
-        const result = await postFetch("/api/auth/reigister", newUser);
+        const result = await postFetch("/api/auth/register", newUser);
         console.log(result);
 
         if (result && result.success) {

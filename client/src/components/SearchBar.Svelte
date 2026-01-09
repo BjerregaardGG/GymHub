@@ -45,8 +45,9 @@
 
     // makes sure that we update filteredUsers when the data changes
     let filteredUsers = $derived(users.filter(user => 
-        user.name.toLowerCase().includes(username.toLowerCase()) 
-        && user.id !== currentUserID
+        user.name &&
+        user.name.toLowerCase().includes(username.toLowerCase()) &&
+        user.id !== currentUserID
     ));
 
 </script>

@@ -1,6 +1,5 @@
 <script>
-  import { run } from "svelte/legacy";
-    import { postFetch } from "../../util/fetchUtil.js";
+    import { postFetch, putFetch } from "../../util/fetchUtil.js";
     import toastr from "toastr";
 
     let {onClose, userTrainingData = $bindable()} = $props(); 
@@ -18,6 +17,42 @@
         return decimal >= 0 && decimal < 0.60; 
     }
     
+    async function postPrData(event) {
+        event.preventDefault(); 
+
+        if (!isValidRunTime(userTrainingData.run_5k_min)) {
+            toastr.error("Not a valid run time"); 
+            return; 
+        }
+
+        const result = await postFetch("/api/prs/me", userTrainingData); 
+
+        if (!result) {
+            toastr.error("Could not post training data");
+        } else {
+            toastr.success(result.message); 
+            onClose(); 
+        }
+    };
+
+    async function updatePrData(event) {
+        event.preventDefault(); 
+
+        if (!isValidRunTime(userTrainingData.run_5k_min)) {
+            toastr.error("Not a valid run time"); 
+            return; 
+        }
+
+        const result = await putFetch("/api/prs/me", userTrainingData); 
+
+        if (!result) {
+            toastr.error("Could not update training data");
+        } else {
+            toastr.success(result.message); 
+            onClose(); 
+        }
+    };
+/*
     async function updateTrainingData(event){
         event.preventDefault();
 
@@ -35,9 +70,11 @@
             onClose();
         }
     };
+    */
 </script>
 
-<form class="pr-form" onsubmit={updateTrainingData}>
+{#if Object.keys(userTrainingData).length > 0}
+<form class="pr-form" onsubmit={updatePrData}>
     <label class="pr-label">Bench Press (kg):
         <input type="number" step="0.25" bind:value={userTrainingData.bench_press_kg} />
     </label>
@@ -55,6 +92,29 @@
     </label>
     <button type="submit" class="pr-button">Update PR Data</button>
 </form>
+
+{:else}
+
+<form class="pr-form" onsubmit={postPrData}>
+    <label class="pr-label">Bench Press (kg):
+        <input type="number" step="0.25" bind:value={userTrainingData.bench_press_kg} />
+    </label>
+    <label class="pr-label">Squat (kg):
+        <input type="number" step="0.25" bind:value={userTrainingData.squat_kg} />
+    </label>
+    <label class="pr-label">Deadlift (kg):
+        <input type="number" step="0.25" bind:value={userTrainingData.deadlift_kg} />
+    </label>
+    <label class="pr-label">5k Run (min):
+        <input type="number" step="0.01" bind:value={userTrainingData.run_5k_min} />
+    </label>
+    <label class="pr-label">Pull-ups max:
+        <input type="number" bind:value={userTrainingData.pull_ups_max} />
+    </label>
+    <button type="submit" class="pr-button">Create PR Data</button>
+</form>
+{/if}
+
 
 <style>
 .pr-form {
