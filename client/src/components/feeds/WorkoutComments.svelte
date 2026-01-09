@@ -23,7 +23,6 @@
                 localDate: new Date(comment.date_recorded).toLocaleString()
                 }));
 
-            console.log($state.snapshot(comments));
         }
     };
 
@@ -40,7 +39,7 @@
 
     // Runs at mount and everytime store changes
     $effect(() => {
-        const updateTrigger = $commentsUpdated; // reaactive trigger --> getComments() is called
+        const updateTrigger = $commentsUpdated; // reactive trigger --> getComments() is called
         getComments(); 
     });
 

@@ -17,16 +17,17 @@
   let loading = $state(true);
 
   async function handlePrivateStatusToggle() {
-        const result = await patchFetch("/api/users/me/privacy"); 
+    const result = await patchFetch("/api/users/me/privacy"); 
         
-        if (result && result.success) {
-            isPrivate = result.is_private; 
-            toastr.success(result.message);
-        } else {
-            toastr.error(result.message);
-        }
-    }
+    if (result && result.success) {
+        isPrivate = result.is_private; 
+        toastr.success(result.message);
+    } else {
+        toastr.error(result.message);
+      }
+  }
 
+  // we check if the user is logged in 
   async function checkAuthentication(){
     const result = await getFetch("/api/users/me"); 
 
@@ -116,7 +117,7 @@
 
     <Route path="/profile/:id" let:params>
       {#if loggedIn}
-      <Friend id={params.id}></Friend>
+      <Friend id={params.id}></Friend> <!-- Used by followers & following -->
       {:else}
       <Login bind:loggedIn></Login>
       {/if}

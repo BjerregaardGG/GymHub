@@ -1,10 +1,11 @@
 <script>
     import { onMount } from "svelte";
     import { getFetch, postFetch } from "../util/fetchUtil.js"; 
-    import toastr from 'toastr';
     import { Link } from "svelte-routing";
+    import toastr from 'toastr';
 
     let { following, currentUserID, loadFollowing } = $props();
+    
     let username = $state("");
     let users = $state([]);
 
@@ -15,7 +16,6 @@
             toastr.error("Could not load users");
         } else {
             users = result.data; 
-            console.log(users); 
         }
     }; 
 
@@ -30,14 +30,14 @@
         toastr.success(result.message);
 
         users = users.map(user =>
-            user.id === userId ? 
-                { ...user, followStatus: result.status } // sets status 
-                : user
+            user.id === userId ? // if we find the user 
+                { ...user, followStatus: result.status } 
+                : user // otherwise return the user
         );
 
         if (result.status === "ACCEPTED") {
-            await loadFollowing();
-            await loadUsers(); 
+            await loadFollowing(); // we update parent 
+            await loadUsers(); // we update local users
         }
     }
 

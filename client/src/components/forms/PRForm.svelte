@@ -52,25 +52,7 @@
             onClose(); 
         }
     };
-/*
-    async function updateTrainingData(event){
-        event.preventDefault();
 
-        if (!isValidRunTime(userTrainingData.run_5k_min)) {
-            toastr.error("Not a valid run time");
-            return;
-        }
-
-        const result = await postFetch("/api/prs/me", userTrainingData);
-
-        if (!result) {
-            toastr.error("Could not update training data");
-        } else {
-            toastr.success(result.message)
-            onClose();
-        }
-    };
-    */
 </script>
 
 {#if userTrainingData?.id}

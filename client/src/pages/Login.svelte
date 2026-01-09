@@ -6,7 +6,7 @@
     let password = $state("");
     let name = $state("");
     let mode = $state("login");
-    let { loggedIn = $bindable() } = $props();
+    let { loggedIn = $bindable() } = $props(); // allows parent (App) to bind login
 
     async function handleLogin() {
         const user = { 
@@ -15,7 +15,6 @@
         }
 
         const result = await postFetch("/api/auth/login", user);
-        console.log(result);
 
         if (result && result.success) { 
             toastr.success(result.message || "Login successful!");
@@ -39,7 +38,6 @@
         }
 
         const result = await postFetch("/api/auth/register", newUser);
-        console.log(result);
 
         if (result && result.success) {
             toastr.success("You successfully created a new user. Please sign in.")

@@ -22,6 +22,7 @@
         <p>No training data yet.</p>
     {/if}
 
+    <!-- If we wanna show PrList on another profile (false)-->
     {#if canUpdate}
     <button onclick={handleUpdateButton}>Update PR Data</button>
     {/if}

@@ -81,6 +81,7 @@ router.post("/forgot-password", async (req, res) => {
 router.post("/reset-password", async (req, res) => {
     const { token, newPassword } = req.body;
 
+    // checks if the temporary token exists 
     const tokenData = resetToken[token];
 
     // Checks if the token exists

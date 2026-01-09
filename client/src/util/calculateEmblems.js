@@ -1,4 +1,5 @@
 
+// purpose --> calculate emblems based on prData and workouts
 export function calculateEmblems(workouts = [], prData = {}){
 
     const trainingSymbols = {
@@ -40,6 +41,7 @@ export function calculateEmblems(workouts = [], prData = {}){
     return trainingSymbols; 
 }
 
+// prurpose --> translate emblem keys to descriptions for UI
 export function getEmblemDescription(key) {
     switch (key) {
         case 'firstTrainingSymbol':
@@ -54,3 +56,4 @@ export function getEmblemDescription(key) {
             return "No emblem";
     }
 }
+
