@@ -86,7 +86,7 @@ export default ({ onlineUsers }) => {
     });
 
     // follow a user 
-    router.post("/following/:id", isAuthorized, async (req, res ) => {
+    router.post("/me/following/:id", isAuthorized, async (req, res ) => {
         const senderId = req.session.user.id;
         const recieverId = parseInt(req.params.id); 
 
@@ -147,7 +147,7 @@ export default ({ onlineUsers }) => {
         }
     });
 
-    router.patch("/requests/:id/accept", isAuthorized, async (req, res) => {
+    router.patch("/me/requests/:id/accept", isAuthorized, async (req, res) => {
         const revieverId = req.session.user.id;
         const senderId = parseInt(req.params.id); 
 
@@ -177,7 +177,7 @@ export default ({ onlineUsers }) => {
 
     });
 
-    router.patch("/requests/:id/decline", isAuthorized, async (req, res) => {
+    router.patch("/me/requests/:id/decline", isAuthorized, async (req, res) => {
         const revieverId = req.session.user.id;
         const senderId = parseInt(req.params.id); 
 
@@ -206,7 +206,7 @@ export default ({ onlineUsers }) => {
         };
     });
 
-    router.delete("/following/:id", isAuthorized, async (req, res) => {
+    router.delete("/me/following/:id", isAuthorized, async (req, res) => {
         const senderId = req.session.user.id;
         const recieverId = parseInt(req.params.id); 
 

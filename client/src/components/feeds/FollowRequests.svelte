@@ -7,9 +7,9 @@
     async function handleRequest(senderId, action) {
         let result;
         if (action === 'accept') {
-            result = await patchFetch(`/api/relations/requests/${senderId}/accept`);
+            result = await patchFetch(`/api/relations/me/requests/${senderId}/accept`);
         } else if (action === 'decline') {
-            result = await patchFetch(`/api/relations/requests/${senderId}/decline`);
+            result = await patchFetch(`/api/relations/me/requests/${senderId}/decline`);
         }
 
         if (result && result.success) {

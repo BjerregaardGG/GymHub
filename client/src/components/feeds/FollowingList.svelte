@@ -9,7 +9,7 @@
 
     async function deleteFollowing(userId){
 
-        const result = await deleteFetch(`/api/relations/following/${userId}`); 
+        const result = await deleteFetch(`/api/relations/me/following/${userId}`); 
 
         if (result && result.success) {
             toastr.success(result.message);
