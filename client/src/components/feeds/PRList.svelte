@@ -12,9 +12,9 @@
 <div class="pr-section">
     {#if Object.keys(userTrainingData).length > 0}
     <ul class="pr-list">
-        {#each Object.entries(userTrainingData).filter(([key]) => key != "id") as [metric, value]}
+        {#each Object.entries(userTrainingData).filter(([key]) => key != "id") as [exercise, value]}
             <li class="pr-item">
-                <strong>{metric.replace(/_/g, ' ').toUpperCase()}:</strong> {value}
+                <strong>{exercise.replace(/_/g, ' ').toUpperCase()}:</strong> {value} <!--Removes under_score-->
             </li>
         {/each}
     </ul>

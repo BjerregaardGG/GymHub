@@ -60,7 +60,6 @@
             toastr.error("Could not load training data");
         } else {
             userTrainingData = result.data; 
-            console.log($state.snapshot(userTrainingData));
         }
     }; 
 
@@ -71,7 +70,6 @@
             toastr.error("Could not load users you follow"); 
         } else {
             following = result.data; 
-            console.log($state.snapshot(following));
         }
     };
 
@@ -94,7 +92,6 @@
             toastr.error("Could not load workouts");
         } else {
             workoutsData = result.data; 
-            console.log("Workouts:", $state.snapshot(workoutsData));
         }
     };
 
@@ -117,7 +114,6 @@
             toastr.error("Could not load requests");
         } else {
             followRequests = result.data; 
-            console.log("Requests:", $state.snapshot(followRequests));
         }
     }
 
@@ -127,7 +123,6 @@
     onMount(loadFollowRequests); 
     onMount(loadPRData);
     onMount(loadWorkouts);
-
 
 </script>
 {#if formType === null}
