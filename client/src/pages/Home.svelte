@@ -86,8 +86,6 @@
     async function loadWorkouts(){
         const result = await getFetch("/api/workouts/me");
 
-        console.log("Fetch result:", result);
-
         if (!result) {
             toastr.error("Could not load workouts");
         } else {

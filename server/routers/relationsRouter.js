@@ -1,5 +1,5 @@
 import {Router} from "express"
-import { isAuthorized} from '../middleware/authMiddleware.js';
+import { isAuthenticated} from '../middleware/authMiddleware.js';
 
 import db from "../database/connection.js";
 
@@ -7,7 +7,7 @@ import db from "../database/connection.js";
 export default ({ onlineUsers }) => {
     const router = Router(); 
     
-    router.get("/me/following", isAuthorized, async (req, res) => {
+    router.get("/me/following", isAuthenticated, async (req, res) => {
         const userId = req.session.user.id; 
 
         const following = await db.all(`
@@ -34,7 +34,7 @@ export default ({ onlineUsers }) => {
         res.send({ data: followingWithStatus, success: true, message: "Successfully fetched following users" });
     });
 
-    router.get("/me/followers", isAuthorized, async (req, res) => {
+    router.get("/me/followers", isAuthenticated, async (req, res) => {
         const userId = req.session.user.id;
 
         const followers = await db.all(`
@@ -62,7 +62,7 @@ export default ({ onlineUsers }) => {
     });
 
     // if private - we check for requests 
-    router.get("/me/requests", isAuthorized, async (req, res) => {
+    router.get("/me/requests", isAuthenticated, async (req, res) => {
         const userId = req.session.user.id; 
 
         const followRequests = await db.all(`
@@ -86,7 +86,7 @@ export default ({ onlineUsers }) => {
     });
 
     // follow a user 
-    router.post("/me/following/:id", isAuthorized, async (req, res ) => {
+    router.post("/me/following/:id", isAuthenticated, async (req, res ) => {
         const senderId = req.session.user.id;
         const recieverId = parseInt(req.params.id); 
 
@@ -147,7 +147,7 @@ export default ({ onlineUsers }) => {
         }
     });
 
-    router.patch("/me/requests/:id/accept", isAuthorized, async (req, res) => {
+    router.patch("/me/requests/:id/accept", isAuthenticated, async (req, res) => {
         const revieverId = req.session.user.id;
         const senderId = parseInt(req.params.id); 
 
@@ -177,7 +177,7 @@ export default ({ onlineUsers }) => {
 
     });
 
-    router.patch("/me/requests/:id/decline", isAuthorized, async (req, res) => {
+    router.patch("/me/requests/:id/decline", isAuthenticated, async (req, res) => {
         const revieverId = req.session.user.id;
         const senderId = parseInt(req.params.id); 
 
@@ -206,7 +206,7 @@ export default ({ onlineUsers }) => {
         };
     });
 
-    router.delete("/me/following/:id", isAuthorized, async (req, res) => {
+    router.delete("/me/following/:id", isAuthenticated, async (req, res) => {
         const senderId = req.session.user.id;
         const recieverId = parseInt(req.params.id); 
 
@@ -225,7 +225,7 @@ export default ({ onlineUsers }) => {
         res.send({ success: true, message: `You are now unfollowing` });
     });
 
-    router.delete("/me/followers/:id", isAuthorized, async (req, res) => {
+    router.delete("/me/followers/:id", isAuthenticated, async (req, res) => {
         const followerId = parseInt(req.params.id);
         const userId = req.session.user.id; 
 

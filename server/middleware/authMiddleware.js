@@ -1,4 +1,4 @@
-export function isAuthorized(req, res, next){
+export function isAuthenticated(req, res, next){
     if (!req.session || !req.session.user) {
         return res.status(401).send({ message: "Not authorized. You need to login"})
     }

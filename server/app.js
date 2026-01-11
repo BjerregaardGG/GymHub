@@ -45,7 +45,6 @@ io.on("connection", (socket) => {
         // Register the user as online 
         onlineUsers[userId] = socket.id;
         
-        // emits to all the sockets but itself
         socket.broadcast.emit('friend-status-update', { 
             userId: userId, 
             isOnline: true 

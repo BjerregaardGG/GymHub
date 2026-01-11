@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { isAuthorized } from '../middleware/authMiddleware.js';
+import { isAuthenticated } from '../middleware/authMiddleware.js';
 import { canViewContent } from '../middleware/privacyMiddleware.js';
 import { getWorkoutsWithExercisesById } from './services/workoutService.js';
 import db from "../database/connection.js";
@@ -7,7 +7,7 @@ import db from "../database/connection.js";
 const router = Router();
 
 // collects the workouts and their exercises for the logged in user
-router.get("/me", isAuthorized, async (req, res) => {
+router.get("/me", isAuthenticated, async (req, res) => {
     const userId = req.session.user.id; 
 
     const workouts = await getWorkoutsWithExercisesById(userId);
@@ -28,7 +28,7 @@ router.get("/me", isAuthorized, async (req, res) => {
 });
 
 // collects the workouts a specific user
-router.get("/:id", isAuthorized, canViewContent, async (req, res) => {
+router.get("/:id", isAuthenticated, canViewContent, async (req, res) => {
     const userId = req.params.id;
 
     const workouts = await getWorkoutsWithExercisesById(userId);
@@ -49,7 +49,7 @@ router.get("/:id", isAuthorized, canViewContent, async (req, res) => {
 });
 
 // creates a new workout with exercises
-router.post("/me", isAuthorized, async (req, res) => {
+router.post("/me", isAuthenticated, async (req, res) => {
     const userId = req.session.user.id;
     const {title, description, exercises } = req.body; 
 

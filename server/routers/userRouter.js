@@ -1,17 +1,17 @@
 import { Router } from 'express';
-import { isAuthorized } from '../middleware/authMiddleware.js';
+import { isAuthenticated } from '../middleware/authMiddleware.js';
 import db from "../database/connection.js";
 
 const router = Router();
 
-router.get("/", isAuthorized, async (req, res) => {
+router.get("/", isAuthenticated, async (req, res) => {
 
     const userData = await db.all('SELECT id, name, role FROM users');
 
     res.send({ data: userData, success: true});
 });
 
-router.get("/me", isAuthorized, async (req, res) => {
+router.get("/me", isAuthenticated, async (req, res) => {
     const userId = req.session.user.id; 
 
     const userData = await db.get(`SELECT id, name, image_path, is_private FROM users WHERE id = ?;`, userId);
@@ -23,7 +23,7 @@ router.get("/me", isAuthorized, async (req, res) => {
     res.send({ data: userData, success: true});
 });
 
-router.get("/:id", isAuthorized, async (req, res) => {
+router.get("/:id", isAuthenticated, async (req, res) => {
     const userId = req.params.id; 
 
     const userData = await db.get(`SELECT name, image_path FROM users WHERE id = ?;`, userId);
@@ -34,7 +34,7 @@ router.get("/:id", isAuthorized, async (req, res) => {
     res.send({ data: userData, success: true});
 })
 
-router.patch("/me/privacy", isAuthorized, async (req, res) => {
+router.patch("/me/privacy", isAuthenticated, async (req, res) => {
     const userId = req.session.user.id; 
 
      try {

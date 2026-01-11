@@ -1,11 +1,11 @@
 import {Router} from 'express';
-import { isAuthorized } from '../middleware/authMiddleware.js';
+import { isAuthenticated } from '../middleware/authMiddleware.js';
 import { canViewContent } from '../middleware/privacyMiddleware.js';
 import { getPrInformation } from './services/prService.js';
 import db from "../database/connection.js";
 const router = Router();
 
-router.get("/me", isAuthorized, async (req, res) => { 
+router.get("/me", isAuthenticated, async (req, res) => { 
     const userId = req.session.user.id; 
 
     const prData = await getPrInformation(userId);
@@ -18,7 +18,7 @@ router.get("/me", isAuthorized, async (req, res) => {
 }); 
 
 
-router.get("/:id", isAuthorized, canViewContent, async (req, res) => { 
+router.get("/:id", isAuthenticated, canViewContent, async (req, res) => { 
     const profileUserId = parseInt(req.params.id);
 
     const prData = await getPrInformation(profileUserId);
@@ -30,7 +30,7 @@ router.get("/:id", isAuthorized, canViewContent, async (req, res) => {
     res.send({ data: prData ? prData : {}, success: true }); 
 }); 
 
-router.post("/me", isAuthorized, async (req, res) => {
+router.post("/me", isAuthenticated, async (req, res) => {
     
     try {
         const userId = req.session.user.id; 
@@ -68,7 +68,7 @@ router.post("/me", isAuthorized, async (req, res) => {
     }
 });
 
-router.put("/me", isAuthorized, async (req, res) => {
+router.put("/me", isAuthenticated, async (req, res) => {
     const userId = req.session.user.id;
     const { bench_press_kg, squat_kg, deadlift_kg, run_5k_min, pull_ups_max } = req.body;
 
