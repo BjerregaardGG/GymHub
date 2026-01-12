@@ -1,7 +1,7 @@
 import db from "../../database/connection.js";
 
 export async function getWorkoutsWithExercisesById(userId) {
-    const userWorkouts = await db.all(`SELECT * FROM workouts WHERE user_id = ?`, userId);
+    const userWorkouts = await db.all(`SELECT * FROM workouts WHERE user_id = ? ORDER BY date_recorded DESC`, userId);
 
     if (userWorkouts.length === 0) {
         return [];

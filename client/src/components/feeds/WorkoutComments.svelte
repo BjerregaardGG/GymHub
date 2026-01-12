@@ -64,7 +64,7 @@
                         <span class="comment-date">{comment.localDate}</span>
                     </div>
 
-                    {#if comment.user_id === $user.id}
+                    {#if $user && comment.user_id === $user.id}
                         <button class="delete-comment-btn" onclick={() => deleteComment(comment.id)}>
                         🗑
                         </button>

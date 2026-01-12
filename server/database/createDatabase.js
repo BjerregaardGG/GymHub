@@ -169,5 +169,8 @@ if (deleteMode) {
           (1, 3, 'Great effort! Keep going!'),
           (2, 3, 'Nice weight on bench press!'),
           (3, 4, 'This full body session was tough!'),
+          (4, 3, 'Nice job! That one looked tough!'), 
+          (4, 1, 'Wow!'), 
+          (5, 3, 'That one is nice!'),
           (2, 2, 'I need to improve my pull-ups')`);
 }

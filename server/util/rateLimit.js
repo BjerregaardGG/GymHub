@@ -12,7 +12,7 @@ export const genralLimiter = rateLimit({
 // The authentication (log in) rateLimit
 export const authLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
-	limit: 10, // limits the authorization to 10 requests
+	limit: 20, // limits the authorization to 20 requests
 	message: { success: false, message: "Too many login attempts. Try again in 15 minutes." },
 	standardHeaders: 'draft-8', 
 	legacyHeaders: false, 

@@ -1,6 +1,8 @@
 <script>
   import { Router, Link, Route, navigate } from "svelte-routing";
   import { onMount } from "svelte";
+  import { user } from "./stores/userStore.js";
+
 
   import Login from "./pages/Login.svelte";
   import Home from "./pages/Home.svelte";
@@ -35,6 +37,7 @@
     if (result && result.success) {
         loggedIn = true; 
         isPrivate = result.is_private;
+        user.set(result.data);
     } else {
         loggedIn = false;
         isPrivate = false;

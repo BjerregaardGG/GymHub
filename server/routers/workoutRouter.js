@@ -74,8 +74,8 @@ router.post("/me", isAuthenticated, async (req, res) => {
             (workout_id, name, sets, reps, weight_kg)
             VALUES (?, ?, ?, ?, ?)
             `
-
             await db.run(postExercisesQuery, workoutID, exercise.name, exercise.sets, exercise.reps, exercise.weight_kg);
+        
         });
 
         await Promise.all(exercisePromises); // We wait for all exercises

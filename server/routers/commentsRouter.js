@@ -50,7 +50,7 @@ router.delete("/:commentId", isAuthenticated, async (req, res) => {
             return res.status(403).send({succes: false, message: "Could not delete comment"}); 
         }
 
-    res.send({ success: true, message: "Comment deleted" });
+        return res.send({ success: true, message: "Comment deleted" });
 
     } catch(error) {
         console.log(error);

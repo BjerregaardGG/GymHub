@@ -43,7 +43,7 @@ router.post("/register", async (req, res) => {
     const hashedPassword = await hashPassword(password, 14);
     const defaultRole = "USER"; 
 
-    try{
+    try {
         await db.run('INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?);', name, email, hashedPassword, defaultRole);
         res.send({ success: true, message: "User is created"});
     } catch (error) {
