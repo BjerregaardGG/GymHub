@@ -37,7 +37,7 @@
         }
     }
 
-    // Runs at mount and everytime store changes
+    // Side effect
     $effect(() => {
         const updateTrigger = $commentsUpdated; // reactive trigger --> getComments() is called
         getComments(); 
