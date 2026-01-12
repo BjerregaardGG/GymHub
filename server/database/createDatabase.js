@@ -92,6 +92,9 @@ if (deleteMode) {
      // Nanna (2) is following Thomas (3)
      db.run(`INSERT INTO follow_requests (sender_id, reciever_id, status) VALUES 
           (2, 3, 'ACCEPTED')`);
+     
+     db.run(`INSERT INTO follow_requests (sender_id, reciever_id, status) VALUES 
+          (3, 2, 'ACCEPTED')`);
 
      db.run(`INSERT INTO follow_requests (sender_id, reciever_id, status) VALUES 
           (2, 1, 'ACCEPTED')`);

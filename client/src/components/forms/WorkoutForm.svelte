@@ -51,7 +51,7 @@
     </label>
 
     <hr>
-    <h2>Add exercises</h2>
+    <h2>Add strength exercises</h2>
     {#each workoutData.exercises as exercise, index}
         <div class="exercise-group">
             <h4>Exercise {index+1}</h4>
