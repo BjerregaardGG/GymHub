@@ -28,7 +28,6 @@
     let currentUserID = $state(null);
     let socket; 
 
-    // socket connection
     onMount(() => {
         socket = io(import.meta.env.VITE_BASE_URL, {
             withCredentials: true

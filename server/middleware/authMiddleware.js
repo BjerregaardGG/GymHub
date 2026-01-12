@@ -1,6 +1,6 @@
 export function isAuthenticated(req, res, next){
     if (!req.session || !req.session.user) {
-        return res.status(401).send({ message: "Not authorized. You need to login"})
+        return res.status(401).send({ message: "Not authenticated. You need to login"})
     }
 
     req.user = req.session.user; 
